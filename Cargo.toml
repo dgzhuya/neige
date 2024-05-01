@@ -1,0 +1,5 @@
+[workspace]
+members = ["compiler", "infra", "parser", "runtime"]
+resolver = "2"
+[workspace.dependencies]
+anyhow = "1.0.82"
