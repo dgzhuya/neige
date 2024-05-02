@@ -25,6 +25,10 @@ dependencies = [
 [[package]]
 name = "neige_parser"
 version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "neige_infra",
+]
 
 [[package]]
 name = "neige_vm"

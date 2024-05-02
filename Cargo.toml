@@ -1,5 +1,5 @@
 [workspace]
-members = ["compiler", "infra", "undump", "runtime"]
+members = ["neige_compiler", "neige_infra", "neige_undump", "neige_runtime"]
 resolver = "2"
 [workspace.dependencies]
 anyhow = "1.0.82"
