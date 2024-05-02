@@ -1,16 +1,17 @@
-use std::{fs::File, io::Read};
-
-use anyhow::{Ok, Result};
-
+use std::{
+    fs::File,
+    io::{Error, Read},
+};
 mod binary;
 mod info;
 
-use binary::undump;
+use crate::binary::undump;
 
-fn main() -> Result<()> {
-    let mut file = File::open("examples/test.out")?;
+fn main() -> Result<(), Error> {
+    let mut file = File::open("/Users/pinktu/Desktop/neige_lua/examples/test.out")?;
     let mut data = Vec::new();
     file.read_to_end(&mut data)?;
-    undump(data);
+    let proto = undump(data);
+
     Ok(())
 }

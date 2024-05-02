@@ -1,5 +1,6 @@
 use neige_infra::Prototype;
 
+#[allow(dead_code)]
 struct Header {
     signature: [u8; 4],
     version: u8,
@@ -14,6 +15,7 @@ struct Header {
     lua_num: f64,
 }
 
+#[allow(dead_code)]
 struct BinaryChunk {
     header: Header,
     size_upvalue: u8,
