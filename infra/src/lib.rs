@@ -4,3 +4,5 @@ mod math;
 mod proto;
 mod state;
 mod value;
+
+pub use constant::{LUAI_MAXSTACK, LUA_MINSTACK, LUA_REGISTRYINDEX, LUA_RIDX_GLOBALS};
