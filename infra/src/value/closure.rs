@@ -1,8 +1,8 @@
 use std::{hash::Hash, rc::Rc};
 
-use crate::{math::random, proto::proto::Prototype, state::state::LuaState};
+use crate::{math::random, proto::proto::Prototype, state::state::LuaApi};
 
-pub type RustFn = fn(&dyn LuaState) -> usize;
+pub type RustFn = fn(&dyn LuaApi) -> usize;
 
 pub struct Closure {
     pub proto: Option<Rc<Prototype>>,
