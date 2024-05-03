@@ -1,5 +1,5 @@
 [package]
-name = "neige_parser"
+name = "neige_undump"
 version = "0.1.0"
 edition = "2021"
 
