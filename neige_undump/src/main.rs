@@ -11,6 +11,7 @@ fn main() -> Result<(), Error> {
     let mut file = File::open("/Users/pinktu/Desktop/neige_lua/examples/test.out")?;
     let mut data = Vec::new();
     file.read_to_end(&mut data)?;
+    #[allow(unused_variables)]
     let proto = undump(data);
 
     Ok(())

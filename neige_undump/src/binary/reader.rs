@@ -2,11 +2,6 @@ use std::rc::Rc;
 
 use neige_infra::{Constant, LocVar, Prototype, Upvalue};
 
-use crate::binary::{
-    CINT_SIZE, CSIZET_SIZE, INSTRUCTION_SIZE, LUAC_DATA, LUAC_FORMAT, LUAC_INT, LUAC_NUM,
-    LUAC_VERSION, LUA_INTEGER_SIZE, LUA_NUMBER_SIZE, LUA_SIGNATURE,
-};
-
 pub struct Reader {
     data: Vec<u8>,
     pos: usize,
@@ -84,31 +79,23 @@ impl Reader {
     pub fn check_header(&mut self) {
         assert_eq!(
             self.read_bytes(4),
-            LUA_SIGNATURE,
+            [0x1b, 0x4c, 0x75, 0x61],
             "not a precompiled chunk!"
         );
-        assert_eq!(self.read_byte(), LUAC_VERSION, "version mismatch!");
-        assert_eq!(self.read_byte(), LUAC_FORMAT, "format mismatch!");
-        assert_eq!(self.read_bytes(6), LUAC_DATA, "corrupted!");
-        assert_eq!(self.read_byte(), CINT_SIZE, "int size mismatch!");
-        assert_eq!(self.read_byte(), CSIZET_SIZE, "size_t size mismatch!");
+        assert_eq!(self.read_byte(), 0x53, "version mismatch!");
+        assert_eq!(self.read_byte(), 0, "format mismatch!");
         assert_eq!(
-            self.read_byte(),
-            INSTRUCTION_SIZE,
-            "instruction size mismatch!"
+            self.read_bytes(6),
+            [0x19, 0x93, 0x0d, 0x0a, 0x1a, 0x0a],
+            "corrupted!"
         );
-        assert_eq!(
-            self.read_byte(),
-            LUA_INTEGER_SIZE,
-            "lua_Integer size mismatch!"
-        );
-        assert_eq!(
-            self.read_byte(),
-            LUA_NUMBER_SIZE,
-            "lua_Number size mismatch!"
-        );
-        assert_eq!(self.read_lua_integer(), LUAC_INT, "endianness mismatch!");
-        assert_eq!(self.read_lua_number(), LUAC_NUM, "float format mismatch!");
+        assert_eq!(self.read_byte(), 4, "int size mismatch!");
+        assert_eq!(self.read_byte(), 8, "size_t size mismatch!");
+        assert_eq!(self.read_byte(), 4, "instruction size mismatch!");
+        assert_eq!(self.read_byte(), 8, "lua_Integer size mismatch!");
+        assert_eq!(self.read_byte(), 8, "lua_Number size mismatch!");
+        assert_eq!(self.read_lua_integer(), 0x5678, "endianness mismatch!");
+        assert_eq!(self.read_lua_number(), 370.5, "float format mismatch!");
     }
 }
 
