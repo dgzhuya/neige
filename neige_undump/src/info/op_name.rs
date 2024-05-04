@@ -1,4 +1,5 @@
 pub trait OpName {
+    #[allow(dead_code)]
     fn get_op_name(&self) -> &str;
 }
 

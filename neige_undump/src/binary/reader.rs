@@ -1,21 +1,24 @@
-use std::rc::Rc;
+use std::{
+    fs::File,
+    io::{BufReader, Read},
+    rc::Rc,
+};
 
 use neige_infra::{Constant, LocVar, Prototype, Upvalue};
 
 pub struct Reader {
-    data: Vec<u8>,
-    pos: usize,
+    data: BufReader<File>,
 }
 
 impl Reader {
-    pub fn new(data: Vec<u8>) -> Self {
-        Self { data, pos: 0 }
+    pub fn new(data: BufReader<File>) -> Self {
+        Self { data }
     }
 
     pub fn read_byte(&mut self) -> u8 {
-        let b = self.data[self.pos];
-        self.pos += 1;
-        b
+        let mut b = [0u8; 1];
+        self.data.read(&mut b).unwrap();
+        b[0]
     }
 
     fn read_bytes(&mut self, n: usize) -> Vec<u8> {
