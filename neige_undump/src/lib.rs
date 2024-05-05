@@ -1,5 +1,7 @@
-pub mod binary;
-pub mod info;
+mod binary;
+mod info;
+
+pub use binary::undump;
 
 #[cfg(test)]
 mod tests {
