@@ -9,13 +9,14 @@ mod tests {
     use neige_infra::read_file;
 
     use crate::binary::undump;
+    use crate::info::ProtoPrint;
 
     #[test]
     fn proto_undump_test() -> Result<()> {
         let file = read_file("data/test.out")?;
         let data = BufReader::new(file);
-        #[allow(unused_variables)]
         let proto = undump(data);
+        proto.list_proto();
         Ok(())
     }
 }
