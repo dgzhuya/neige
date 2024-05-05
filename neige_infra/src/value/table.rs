@@ -2,8 +2,8 @@ use std::{cell::RefCell, collections::HashMap, hash::Hash};
 
 use crate::math::{float_to_integer, random};
 
-use super::value::{self, LuaValue};
-
+use super::value::LuaValue;
+#[allow(dead_code)]
 #[derive(Clone)]
 pub struct LuaTable {
     arr: RefCell<Vec<LuaValue>>,
@@ -17,6 +17,7 @@ impl Hash for LuaTable {
     }
 }
 
+#[allow(dead_code)]
 impl LuaTable {
     pub fn new(n_arr: usize, n_rec: usize) -> Self {
         Self {
@@ -46,8 +47,67 @@ impl LuaTable {
         }
     }
 
-    pub fn put(&self, key: LuaValue, value: LuaValue) {
-        if key.is_nil() {}
+    pub fn put(&self, key: LuaValue, val: LuaValue) {
+        if key.is_nil() {
+            panic!("table index is not nil")
+        }
+        if let LuaValue::Number(n) = key {
+            if n.is_nan() {
+                panic!("table index is not NaN")
+            }
+        }
+
+        let mut arr = self.arr.borrow_mut();
+        let mut map = self.map.borrow_mut();
+        if let Some(idx) = to_index(&key) {
+            let arr_n = arr.len();
+            if idx <= arr_n {
+                let val_is_nil = val.is_nil();
+                arr[idx - 1] = val;
+                if idx == arr_n && val_is_nil {
+                    shrink_array(&mut arr);
+                }
+                return;
+            }
+            if idx == arr_n + 1 {
+                map.remove(&key);
+                if !val.is_nil() {
+                    arr.push(val);
+                    expand_arr(&mut arr, &mut map)
+                }
+                return;
+            }
+        }
+
+        if !val.is_nil() {
+            map.insert(key, val);
+        } else {
+            map.remove(&key);
+        }
+    }
+}
+
+fn expand_arr(arr: &mut Vec<LuaValue>, map: &mut HashMap<LuaValue, LuaValue>) {
+    let mut idx = arr.len() + 1;
+    loop {
+        let key = LuaValue::Integer(idx as i64);
+        if map.contains_key(&key) {
+            let val = map.remove(&key).unwrap();
+            arr.push(val);
+            idx += 1;
+        } else {
+            break;
+        }
+    }
+}
+
+fn shrink_array(arr: &mut Vec<LuaValue>) {
+    while !arr.is_empty() {
+        if arr.last().unwrap().is_nil() {
+            arr.pop();
+        } else {
+            break;
+        }
     }
 }
 

@@ -7,6 +7,7 @@ use super::{
     table::LuaTable,
 };
 
+#[allow(dead_code)]
 #[derive(Clone)]
 pub enum LuaValue {
     Nil,
@@ -18,6 +19,7 @@ pub enum LuaValue {
     Function(Rc<Closure>),
 }
 
+#[allow(dead_code)]
 impl LuaValue {
     pub fn is_nil(&self) -> bool {
         match self {
@@ -64,7 +66,7 @@ impl PartialEq for LuaValue {
             }
             (&Self::Number(x), &Self::Number(y)) => x == y,
             (Self::Str(x), Self::Str(y)) => x == y,
-            (Self::Table(x), Self::Table(y)) => Rc::ptr_eq(x, x),
+            (Self::Table(x), Self::Table(y)) => Rc::ptr_eq(x, y),
             (Self::Function(x), Self::Function(y)) => Rc::ptr_eq(x, y),
             _ => false,
         }
