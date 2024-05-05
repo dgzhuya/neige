@@ -1,4 +1,4 @@
-use super::MAX_ARG_S_BX;
+use super::MAX_ARG_SBX;
 
 pub trait DecodeOrder {
     fn get_op(&self) -> u8;
@@ -9,7 +9,7 @@ pub trait DecodeOrder {
 
     fn get_a_sbx(&self) -> (u8, i32) {
         let (a, bx) = self.get_a_bx();
-        (a, (bx as i32) - MAX_ARG_S_BX)
+        (a, ((bx as isize) - MAX_ARG_SBX) as i32)
     }
 }
 
