@@ -1,4 +1,3 @@
-#[allow(dead_code)]
 pub trait StackApi {
     fn get_top(&self) -> isize;
     fn abs_index(&self, idx: isize) -> isize;

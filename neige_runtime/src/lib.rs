@@ -1,14 +1,16 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
-}
+mod api;
+mod math;
+mod state;
+mod vm;
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use neige_infra::state::LuaVm;
+
+    use crate::state;
 
     #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+    fn test() {
+        state::LuaState.fetch();
     }
 }
