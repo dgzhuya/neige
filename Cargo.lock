@@ -25,6 +25,9 @@ dependencies = [
 [[package]]
 name = "neige_runtime"
 version = "0.1.0"
+dependencies = [
+ "neige_infra",
+]
 
 [[package]]
 name = "neige_undump"

@@ -7,4 +7,4 @@ edition = "2021"
 
 [dependencies]
 anyhow = { workspace = true }
-neige_infra = { version = "0.1.0", path = "../neige_infra" }
+neige_infra = { version = "0.1.0", workspace = true }
