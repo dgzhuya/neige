@@ -1,6 +1,6 @@
 use std::{fmt::Debug, hash::Hash, rc::Rc};
 
-use crate::{math::float_to_integer, proto::proto::Prototype};
+use crate::{math::float_to_integer, proto::proto::Prototype, LuaType};
 
 use super::{
     closure::{Closure, RustFn},
@@ -36,8 +36,20 @@ impl LuaValue {
         LuaValue::Function(Rc::new(Closure::new_lua_closure(proto)))
     }
 
-    pub fn new_rust_closure(f: RustFn) -> LuaValue {
-        LuaValue::Function(Rc::new(Closure::new_rust_closure(f)))
+    pub fn new_rust_closure(f: RustFn, n_upvals: usize) -> LuaValue {
+        LuaValue::Function(Rc::new(Closure::new_rust_closure(f, n_upvals)))
+    }
+
+    pub fn type_of(&self) -> LuaType {
+        match self {
+            LuaValue::Nil => LuaType::Nil,
+            LuaValue::Boolean(_) => LuaType::Boolean,
+            LuaValue::Integer(_) => LuaType::Integer,
+            LuaValue::Number(_) => LuaType::Number,
+            LuaValue::Str(_) => LuaType::String,
+            LuaValue::Table(_) => LuaType::Table,
+            LuaValue::Function(_) => LuaType::Function,
+        }
     }
 }
 
