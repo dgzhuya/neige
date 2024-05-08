@@ -3,8 +3,8 @@ use std::{cell::RefCell, collections::HashMap, hash::Hash};
 use crate::math::{float_to_integer, random};
 
 use super::value::LuaValue;
-#[allow(dead_code)]
-#[derive(Clone)]
+
+#[derive(Clone, Debug)]
 pub struct LuaTable {
     arr: RefCell<Vec<LuaValue>>,
     map: RefCell<HashMap<LuaValue, LuaValue>>,

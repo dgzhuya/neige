@@ -5,12 +5,11 @@ mod vm;
 
 #[cfg(test)]
 mod tests {
-    use neige_infra::state::LuaVm;
-
-    use crate::state;
+    use crate::state::LuaState;
 
     #[test]
-    fn test() {
-        state::LuaState.fetch();
+    fn test_lua_state() {
+        let state = LuaState::new();
+        println!("{:#?}", state)
     }
 }

@@ -7,7 +7,6 @@ use super::{
     table::LuaTable,
 };
 
-#[allow(dead_code)]
 #[derive(Clone)]
 pub enum LuaValue {
     Nil,

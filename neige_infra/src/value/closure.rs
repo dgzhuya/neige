@@ -6,10 +6,11 @@ use super::upval::LuaUpval;
 
 pub type RustFn = fn(&dyn LuaApi) -> usize;
 
+#[derive(Debug)]
 pub struct Closure {
     pub proto: Option<Rc<Prototype>>,
     pub rust_fn: Option<Rc<RustFn>>,
-    pub upvals: Option<Vec<LuaUpval>>,
+    pub upvals: Vec<LuaUpval>,
     rdm: usize,
 }
 
@@ -20,15 +21,15 @@ impl Closure {
             proto: None,
             rust_fn: None,
             rdm: random(),
-            upvals: None,
+            upvals: Vec::new(),
         }
     }
 
     pub fn new_lua_closure(proto: Rc<Prototype>) -> Self {
         let upvals = if proto.upvalues.len() > 0 {
-            Some(Vec::with_capacity(proto.upvalues.len()))
+            Vec::with_capacity(proto.upvalues.len())
         } else {
-            None
+            Vec::new()
         };
         Closure {
             proto: Some(proto),
@@ -42,7 +43,7 @@ impl Closure {
         Self {
             proto: None,
             rust_fn: Some(Rc::new(f)),
-            upvals: Some(Vec::with_capacity(n_upvals)),
+            upvals: Vec::with_capacity(n_upvals),
             rdm: random(),
         }
     }
