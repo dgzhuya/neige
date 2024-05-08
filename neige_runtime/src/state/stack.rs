@@ -1,4 +1,4 @@
-use std::{collections::HashMap, rc::Rc};
+use std::{cell::RefCell, collections::HashMap, rc::Rc};
 
 use neige_infra::{
     value::{closure::Closure, upval::LuaUpval, value::LuaValue},
@@ -8,7 +8,7 @@ use neige_infra::{
 #[derive(Clone, Debug)]
 pub struct LuaStack {
     slots: Vec<LuaValue>,              // 值信息
-    closure: Rc<Closure>,              // 函数信息
+    closure: Closure,                  // 函数信息
     varargs: Vec<LuaValue>,            // 传入参数信息
     pc: usize,                         // 函数指令执行位置
     openuvs: HashMap<isize, LuaUpval>, // 捕获的上值信息
@@ -18,7 +18,7 @@ impl LuaStack {
     pub fn new(size: usize) -> Self {
         Self {
             slots: Vec::with_capacity(size),
-            closure: Rc::new(Closure::new_fake_closure()),
+            closure: Closure::new_fake_closure(),
             varargs: Vec::new(),
             pc: 0,
             openuvs: HashMap::new(),
@@ -130,6 +130,29 @@ impl LuaStack {
         } else {
             &LuaValue::Nil
         }
+    }
+
+    pub fn set(&mut self, idx: isize, val: LuaValue) {
+        if idx < LUA_REGISTRY_INDEX {
+            let uv_idx = (LUA_REGISTRY_INDEX - idx - 1) as usize;
+            let is_closure = if let Some(_) = self.closure.rust_fn {
+                true
+            } else if let Some(_) = self.closure.proto {
+                true
+            } else {
+                false
+            };
+            if is_closure && uv_idx < self.closure.upvals.len() {
+                self.closure.upvals[uv_idx].set_val(val);
+                return;
+            }
+        }
+        let abs_idx = self.abs_index(idx);
+        if abs_idx > 0 {
+            self.slots[(abs_idx - 1) as usize] = val;
+            return;
+        }
+        panic!("invalid index!!!")
     }
 
     pub fn reverse(&mut self, mut from: usize, mut to: usize) {

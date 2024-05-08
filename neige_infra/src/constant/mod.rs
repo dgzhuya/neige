@@ -3,7 +3,7 @@ mod compare;
 mod token;
 mod types;
 
-pub use types::LuaType;
+pub use self::{arith::LuaArith, compare::LuaCompare, types::LuaType};
 
 pub const LUA_MINSTACK: usize = 20;
 pub const LUAI_MAXSTACK: usize = 1000000;

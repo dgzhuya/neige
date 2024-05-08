@@ -1,4 +1,10 @@
 mod access;
+mod arith;
+mod call;
+mod compare;
+mod get;
+mod misc;
 mod push;
+mod set;
 mod stack;
 mod vm;

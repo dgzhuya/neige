@@ -6,7 +6,7 @@ use super::upval::LuaUpval;
 
 pub type RustFn = fn(&dyn LuaApi) -> usize;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Closure {
     pub proto: Option<Rc<Prototype>>,
     pub rust_fn: Option<Rc<RustFn>>,
