@@ -1,5 +1,6 @@
 use std::rc::Rc;
 
+#[derive(Debug)]
 pub struct Prototype {
     pub source: Option<String>,
     pub line_defined: u32,
@@ -16,17 +17,20 @@ pub struct Prototype {
     pub upvalue_names: Vec<String>,
 }
 
+#[derive(Debug)]
 pub struct LocVar {
     pub var_name: String,
     pub start_pc: u32,
     pub end_pc: u32,
 }
 
+#[derive(Debug)]
 pub struct Upvalue {
     pub in_stack: u8,
     pub idx: u8,
 }
 
+#[derive(Debug)]
 pub enum Constant {
     Nil,
     Boolean(bool),
