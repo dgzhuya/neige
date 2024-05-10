@@ -1,3 +1,6 @@
+/// 设置表API
+///
+/// 数量 `7`
 pub trait SetApi {
     fn set_tabel(&mut self, idx: isize);
     fn set_field(&mut self, idx: isize, key: String);

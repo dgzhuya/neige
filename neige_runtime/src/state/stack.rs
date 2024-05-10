@@ -1,28 +1,39 @@
-use std::{cell::RefCell, collections::HashMap, rc::Rc};
+use std::{
+    cell::RefCell,
+    collections::HashMap,
+    rc::{Rc, Weak},
+};
 
 use neige_infra::{
     value::{closure::Closure, upval::LuaUpval, value::LuaValue},
     LUA_REGISTRY_INDEX,
 };
 
+use super::node::LuaNode;
+
 #[derive(Clone, Debug)]
 pub struct LuaStack {
-    slots: Vec<LuaValue>,              // 值信息
-    closure: Closure,                  // 函数信息
-    varargs: Vec<LuaValue>,            // 传入参数信息
-    pc: usize,                         // 函数指令执行位置
-    openuvs: HashMap<isize, LuaUpval>, // 捕获的上值信息
+    pub slots: Vec<LuaValue>,                // 值信息
+    pub prev: Option<Rc<RefCell<LuaStack>>>, // 上级节点信息
+    pub closure: Closure,                    // 函数信息
+    pub varargs: Vec<LuaValue>,              // 传入参数信息
+    pub pc: usize,                           // 函数指令执行位置
+    pub node: Weak<RefCell<LuaNode>>,        // state 信息
+    pub openuvs: HashMap<isize, LuaUpval>,   // 捕获的上值信息
 }
 
+#[allow(dead_code)]
 impl LuaStack {
-    pub fn new(size: usize) -> Self {
-        Self {
+    pub fn new(size: usize, node: &Rc<RefCell<LuaNode>>) -> Rc<RefCell<Self>> {
+        Rc::new(RefCell::new(Self {
             slots: Vec::with_capacity(size),
             closure: Closure::new_fake_closure(),
             varargs: Vec::new(),
             pc: 0,
+            node: Rc::downgrade(node),
+            prev: None,
             openuvs: HashMap::new(),
-        }
+        }))
     }
 
     pub fn top(&self) -> isize {
@@ -92,14 +103,7 @@ impl LuaStack {
     pub fn is_valid(&self, idx: isize) -> bool {
         if idx < LUA_REGISTRY_INDEX {
             let uv_idx = LUA_REGISTRY_INDEX - idx - 1;
-            let is_closure = if let Some(_) = self.closure.rust_fn {
-                true
-            } else if let Some(_) = self.closure.proto {
-                true
-            } else {
-                false
-            };
-            return is_closure && uv_idx < (self.closure.upvals.len() as isize);
+            return self.has_closure() && uv_idx < (self.closure.upvals.len() as isize);
         }
         if idx == LUA_REGISTRY_INDEX {
             return true;
@@ -108,43 +112,45 @@ impl LuaStack {
         abs_index > 0 && abs_index <= self.top()
     }
 
-    pub fn get(&self, idx: isize) -> &LuaValue {
+    pub fn get(&self, idx: isize) -> LuaValue {
         if idx < LUA_REGISTRY_INDEX {
             let uv_idx = (LUA_REGISTRY_INDEX - idx - 1) as usize;
-            let is_closure = if let Some(_) = self.closure.rust_fn {
-                true
-            } else if let Some(_) = self.closure.proto {
-                true
+            return if !self.has_closure() || uv_idx >= self.closure.upvals.len() {
+                LuaValue::Nil
             } else {
-                false
+                self.closure.upvals[uv_idx].val.clone()
             };
-            return if !is_closure || uv_idx >= self.closure.upvals.len() {
-                &LuaValue::Nil
-            } else {
-                &self.closure.upvals[uv_idx].val
-            };
+        }
+        if idx == LUA_REGISTRY_INDEX {
+            if let Some(node) = self.node.upgrade() {
+                let n = node.borrow();
+                return LuaValue::Table(n.registry.clone());
+            }
         }
         let abs_idx = self.abs_index(idx);
         if abs_idx > 0 && abs_idx <= self.top() {
-            &self.slots[(abs_idx - 1) as usize]
+            self.slots[(abs_idx - 1) as usize].clone()
         } else {
-            &LuaValue::Nil
+            LuaValue::Nil
         }
     }
 
     pub fn set(&mut self, idx: isize, val: LuaValue) {
         if idx < LUA_REGISTRY_INDEX {
             let uv_idx = (LUA_REGISTRY_INDEX - idx - 1) as usize;
-            let is_closure = if let Some(_) = self.closure.rust_fn {
-                true
-            } else if let Some(_) = self.closure.proto {
-                true
-            } else {
-                false
-            };
-            if is_closure && uv_idx < self.closure.upvals.len() {
+            if self.has_closure() && uv_idx < self.closure.upvals.len() {
                 self.closure.upvals[uv_idx].set_val(val);
                 return;
+            }
+        }
+        if idx == LUA_REGISTRY_INDEX {
+            if let Some(node) = self.node.upgrade() {
+                if let LuaValue::Table(tb) = val {
+                    node.borrow_mut().registry = tb;
+                    return;
+                } else {
+                    panic!("set value is not table!!!")
+                }
             }
         }
         let abs_idx = self.abs_index(idx);
@@ -160,6 +166,16 @@ impl LuaStack {
             self.slots.swap(from, to);
             from += 1;
             to -= 1;
+        }
+    }
+
+    fn has_closure(&self) -> bool {
+        if let Some(_) = self.closure.rust_fn {
+            true
+        } else if let Some(_) = self.closure.proto {
+            true
+        } else {
+            false
         }
     }
 }

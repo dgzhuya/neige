@@ -24,6 +24,8 @@ impl PushApi for LuaState {
         todo!()
     }
 
+    fn push_rust_fn(&mut self, f: neige_infra::value::closure::RustFn) {}
+
     fn register(&mut self, name: String, f: neige_infra::value::closure::RustFn) {
         todo!()
     }

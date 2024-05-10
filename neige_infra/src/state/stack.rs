@@ -1,3 +1,6 @@
+/// 栈操作
+///
+/// 数量 `11`
 pub trait StackApi {
     fn get_top(&self) -> isize;
     fn abs_index(&self, idx: isize) -> isize;

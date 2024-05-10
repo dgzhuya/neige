@@ -9,7 +9,7 @@ mod tests {
 
     #[test]
     fn test_lua_state() {
+        #[allow(unused_variables)]
         let state = LuaState::new();
-        println!("{:#?}", state)
     }
 }

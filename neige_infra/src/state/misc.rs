@@ -1,3 +1,6 @@
+/// 杂项API
+///
+/// 数量 `5`
 pub trait MiscApi {
     fn len(&mut self, idx: isize);
     fn concat(&mut self, n: usize);

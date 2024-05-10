@@ -1,68 +1,51 @@
+mod node;
 mod stack;
 
-use std::rc::Rc;
-
-use neige_infra::{
-    state::LuaApi,
-    value::{table::LuaTable, value::LuaValue},
-    LUA_MINSTACK, LUA_REGISTRY_INDEX, LUA_RIDX_GLOBALS,
+use std::{
+    cell::{Ref, RefCell, RefMut},
+    rc::Rc,
 };
-use stack::LuaStack;
-#[allow(dead_code)]
+
+use neige_infra::state::LuaApi;
+
+use self::{node::LuaNode, stack::LuaStack};
+
 #[derive(Clone, Debug)]
 pub struct LuaState {
-    registry: LuaValue,
-    stacks: Vec<LuaStack>,
-}
-
-impl LuaState {
-    pub fn new() -> Self {
-        let registry = LuaValue::new_table(0, 0);
-        if let LuaValue::Table(tb) = &registry {
-            tb.put(
-                LuaValue::Integer(LUA_RIDX_GLOBALS as i64),
-                LuaValue::new_table(0, 0),
-            )
-        }
-        Self {
-            registry,
-            stacks: vec![LuaStack::new(LUA_MINSTACK)],
-        }
-    }
-
-    pub fn set(&mut self, idx: isize, val: LuaValue) {
-        if idx == LUA_REGISTRY_INDEX {
-            if let LuaValue::Table(_) = val {
-                self.registry = val
-            }
-        } else {
-            self.get_stack_mut().set(idx, val)
-        }
-    }
-
-    pub fn get(&self, idx: isize) -> &LuaValue {
-        if idx == LUA_REGISTRY_INDEX {
-            &self.registry
-        } else {
-            self.get_stack().get(idx)
-        }
-    }
-
-    pub fn get_stack(&self) -> &LuaStack {
-        self.stacks.last().unwrap()
-    }
-
-    pub fn get_stack_mut(&mut self) -> &mut LuaStack {
-        self.stacks.last_mut().unwrap()
-    }
-
-    pub fn push_stack(&mut self, stack: LuaStack) {
-        self.stacks.push(stack)
-    }
-
-    pub fn pop_stack(&mut self) -> LuaStack {
-        self.stacks.pop().unwrap()
-    }
+    pub node: Rc<RefCell<LuaNode>>,
 }
 
 impl LuaApi for LuaState {}
+
+#[allow(dead_code)]
+impl LuaState {
+    pub fn new() -> Self {
+        let node = LuaNode::new();
+        Self { node }
+    }
+
+    pub fn pop_lua_stack(&self) {
+        let mut node = self.get_node_mut();
+        if let Some(stack) = node.stack.clone() {
+            node.stack = stack.borrow().prev.clone();
+            stack.borrow_mut().prev = None;
+        }
+    }
+
+    pub fn push_lua_stack(&self, lua_stack: Rc<RefCell<LuaStack>>) {
+        let mut node = self.get_node_mut();
+        lua_stack.borrow_mut().prev = node.stack.clone();
+        node.stack = Some(lua_stack);
+    }
+
+    pub fn get_node(&self) -> Ref<LuaNode> {
+        self.node.borrow()
+    }
+
+    /// 获取node信息
+    /// ### 返回值
+    /// * `RefMut<LuaNode>` lua node的引用
+    pub fn get_node_mut(&self) -> RefMut<LuaNode> {
+        self.node.borrow_mut()
+    }
+}

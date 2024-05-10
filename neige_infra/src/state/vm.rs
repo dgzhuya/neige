@@ -1,5 +1,8 @@
 use super::LuaApi;
 
+/// VM操作
+///
+/// 数量 `9`
 pub trait LuaVm: LuaApi {
     fn pc(&self) -> isize;
     fn add_pc(&mut self, n: isize);

@@ -2,6 +2,7 @@ use neige_infra::state::MiscApi;
 
 use crate::state::LuaState;
 
+#[allow(unused_variables)]
 impl MiscApi for LuaState {
     fn len(&mut self, idx: isize) {
         todo!()

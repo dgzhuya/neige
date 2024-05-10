@@ -1,9 +1,13 @@
 use crate::{constant::LuaType, value::closure::RustFn};
 
+/// 访问API
+///
+/// 数量 `19`
 pub trait AccessApi {
-    fn tp_name(&self, tp: i8) -> &str;
+    fn tp_name(&self, tp: LuaType) -> &str;
     fn ty_id(&self, idx: isize) -> LuaType;
     fn is_none(&self, idx: isize) -> bool;
+    fn is_nil(&self, idx: isize) -> bool;
     fn is_none_or_nil(&self, idx: isize) -> bool;
     fn is_boolean(&self, idx: isize) -> bool;
     fn is_integer(&self, idx: isize) -> bool;

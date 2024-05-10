@@ -2,6 +2,7 @@ use neige_infra::state::GetApi;
 
 use crate::state::LuaState;
 
+#[allow(unused_variables)]
 impl GetApi for LuaState {
     fn new_tabel(&mut self) {
         todo!()

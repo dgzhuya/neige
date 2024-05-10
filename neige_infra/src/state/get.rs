@@ -1,5 +1,8 @@
 use crate::LuaType;
 
+/// 表获取API
+///
+/// 数量 `9`
 pub trait GetApi {
     fn new_tabel(&mut self);
     fn create_tabel(&mut self, n_arr: usize, n_rec: usize);
