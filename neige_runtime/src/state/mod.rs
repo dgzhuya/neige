@@ -6,7 +6,7 @@ use std::{
     rc::Rc,
 };
 
-use neige_infra::state::LuaApi;
+use neige_infra::{state::LuaApi, value::value::LuaValue};
 
 use self::{node::LuaNode, stack::LuaStack};
 
@@ -16,6 +16,82 @@ pub struct LuaState {
 }
 
 impl LuaApi for LuaState {}
+
+/// 用于实现栈相关函数
+#[allow(dead_code)]
+impl LuaState {
+    pub fn stack_get(&self, idx: isize) -> LuaValue {
+        let node = self.get_node();
+        let stack = node.get_stack();
+        stack.get(idx)
+    }
+
+    pub fn stack_top(&self) -> isize {
+        let node = self.get_node();
+        let stack = node.get_stack();
+        stack.top()
+    }
+
+    pub fn stack_check(&self, n: usize) {
+        let node = self.get_node();
+        let mut stack = node.get_stack_mut();
+        stack.check(n)
+    }
+
+    pub fn stack_push(&self, val: LuaValue) {
+        let node = self.get_node();
+        let mut stack = node.get_stack_mut();
+        stack.push(val)
+    }
+
+    pub fn stack_push_n(&self, vals: Vec<LuaValue>, n: isize) {
+        let node = self.get_node();
+        let mut stack = node.get_stack_mut();
+        stack.push_n(vals, n)
+    }
+
+    pub fn stack_pop(&self) -> LuaValue {
+        let node = self.get_node();
+        let mut stack = node.get_stack_mut();
+        stack.pop()
+    }
+
+    pub fn stack_pop_n(&self, n: usize) -> Vec<LuaValue> {
+        let node = self.get_node();
+        let mut stack = node.get_stack_mut();
+        stack.pop_n(n)
+    }
+
+    pub fn stack_set_top(&self, idx: isize) {
+        let node = self.get_node();
+        let mut stack = node.get_stack_mut();
+        stack.set_top(idx)
+    }
+
+    pub fn stack_abs_index(&self, idx: isize) -> isize {
+        let node = self.get_node();
+        let stack = node.get_stack();
+        stack.abs_index(idx)
+    }
+
+    pub fn stack_is_valid(&self, idx: isize) -> bool {
+        let node = self.get_node();
+        let stack = node.get_stack();
+        stack.is_valid(idx)
+    }
+
+    pub fn stack_set(&self, idx: isize, val: LuaValue) {
+        let node = self.get_node();
+        let mut stack = node.get_stack_mut();
+        stack.set(idx, val)
+    }
+
+    pub fn stack_reverse(&self, from: usize, to: usize) {
+        let node = self.get_node();
+        let mut stack = node.get_stack_mut();
+        stack.reverse(from, to)
+    }
+}
 
 #[allow(dead_code)]
 impl LuaState {

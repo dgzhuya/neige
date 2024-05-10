@@ -1,4 +1,8 @@
-use neige_infra::{state::AccessApi, value::value::LuaValue, LuaType};
+use neige_infra::{
+    state::AccessApi,
+    value::{closure::RustFn, value::LuaValue},
+    LuaType,
+};
 
 use crate::state::LuaState;
 
@@ -22,11 +26,8 @@ impl AccessApi for LuaState {
     }
 
     fn ty_id(&self, idx: isize) -> neige_infra::LuaType {
-        let node = self.get_node();
-        let stack = node.get_stack();
-        if stack.is_valid(idx) {
-            let val = stack.get(idx);
-            val.type_of()
+        if self.stack_is_valid(idx) {
+            self.stack_get(idx).type_of()
         } else {
             LuaType::None
         }
@@ -57,13 +58,13 @@ impl AccessApi for LuaState {
     }
 
     fn is_string(&self, idx: isize) -> bool {
-        self.ty_id(idx) == LuaType::String
+        let t = self.ty_id(idx);
+        t == LuaType::String || t == LuaType::Number || t == LuaType::Table
     }
 
     fn is_rust_fn(&self, idx: isize) -> bool {
-        let node = self.get_node();
-        let stack = node.get_stack();
-        if let LuaValue::Function(f) = stack.get(idx) {
+        let val = self.stack_get(idx);
+        if let LuaValue::Function(f) = val {
             if let Some(_) = f.rust_fn {
                 return true;
             }
@@ -72,67 +73,64 @@ impl AccessApi for LuaState {
     }
 
     fn to_boolean(&self, idx: isize) -> bool {
-        let node = self.get_node();
-        let stack = node.get_stack();
-
-        let val = stack.get(idx);
-        convert_to_boolean(&val)
+        self.stack_get(idx).convert_to_boolean()
     }
 
     fn to_integer(&self, idx: isize) -> i64 {
-        todo!()
+        self.to_integer_x(idx).unwrap_or(0)
     }
 
-    fn to_integer_x(&self, idx: isize) -> (i64, bool) {
-        todo!()
+    fn to_integer_x(&self, idx: isize) -> Option<i64> {
+        self.stack_get(idx).convert_to_integer()
     }
 
     fn to_number(&self, idx: isize) -> f64 {
-        todo!()
+        self.to_number_x(idx).unwrap_or(0.0)
     }
 
-    fn to_number_x(&self, idx: isize) -> (f64, bool) {
-        todo!()
+    fn to_number_x(&self, idx: isize) -> Option<f64> {
+        self.stack_get(idx).convert_to_float()
     }
 
     fn to_string(&self, idx: isize) -> String {
-        todo!()
+        self.to_string_x(idx).unwrap_or(format!(""))
     }
 
-    fn to_string_x(&self, idx: isize) -> (String, bool) {
-        let node = self.get_node();
-        let mut stack = node.get_stack_mut();
-        let val = stack.get(idx);
+    fn to_string_x(&self, idx: isize) -> Option<String> {
+        let val = self.stack_get(idx);
         match val {
             LuaValue::Integer(i) => {
                 let s = format!("{}", i);
-                stack.set(idx, LuaValue::Str(s.clone()));
-                (s, true)
+                self.stack_set(idx, LuaValue::Str(s.clone()));
+                Some(s)
             }
             LuaValue::Number(f) => {
                 let s = format!("{}", f);
-                stack.set(idx, LuaValue::Str(s.clone()));
-                (s, true)
+                self.stack_set(idx, LuaValue::Str(s.clone()));
+                Some(s)
             }
-            LuaValue::Str(s) => (s, true),
+            LuaValue::Str(s) => Some(s),
             LuaValue::Table(_) => todo!(),
-            _ => (format!(""), false),
+            _ => None,
         }
     }
 
-    fn to_rust_fn(&self, idx: isize) -> neige_infra::value::closure::RustFn {
-        todo!()
+    fn to_rust_fn(&self, idx: isize) -> Option<RustFn> {
+        let val = self.stack_get(idx);
+        if let LuaValue::Function(f) = val {
+            if let Some(f) = &f.rust_fn {
+                return Some(*f.as_ref());
+            }
+        }
+        None
     }
 
     fn raw_len(&self, idx: isize) -> usize {
-        todo!()
-    }
-}
-
-fn convert_to_boolean(val: &LuaValue) -> bool {
-    match val {
-        LuaValue::Nil => false,
-        LuaValue::Boolean(b) => *b,
-        _ => true,
+        let val = self.stack_get(idx);
+        match val {
+            LuaValue::Str(s) => s.len(),
+            LuaValue::Table(t) => t.as_ref().arr.borrow().len(),
+            _ => 0,
+        }
     }
 }

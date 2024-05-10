@@ -9,9 +9,7 @@ impl CallApi for LuaState {
     }
 
     fn call(&mut self, n_args: isize, n_result: isize) {
-        let node = self.get_node();
-        let stack = node.get_stack();
-        let val = stack.get(-(n_args + 1));
+        let val = self.stack_get(-(n_args + 1));
         if let LuaValue::Function(c) = val {
             // println!("{:?}", c)
         }

@@ -14,7 +14,7 @@ pub struct LuaNode {
 }
 
 impl LuaNode {
-    pub fn new() -> Rc<RefCell<Self>> {
+    pub(super) fn new() -> Rc<RefCell<Self>> {
         let table = LuaTable::new(0, 0);
         let node = Rc::new(RefCell::new(Self {
             stack: None,
@@ -25,7 +25,7 @@ impl LuaNode {
         node
     }
 
-    pub fn get_stack(&self) -> Ref<LuaStack> {
+    pub(super) fn get_stack(&self) -> Ref<LuaStack> {
         if let Some(stack) = &self.stack {
             stack.borrow()
         } else {
@@ -33,7 +33,7 @@ impl LuaNode {
         }
     }
 
-    pub fn get_stack_mut(&self) -> RefMut<LuaStack> {
+    pub(super) fn get_stack_mut(&self) -> RefMut<LuaStack> {
         if let Some(stack) = &self.stack {
             stack.borrow_mut()
         } else {

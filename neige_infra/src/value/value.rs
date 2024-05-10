@@ -18,7 +18,6 @@ pub enum LuaValue {
     Function(Rc<Closure>),
 }
 
-#[allow(dead_code)]
 impl LuaValue {
     pub fn is_nil(&self) -> bool {
         match self {
@@ -43,11 +42,51 @@ impl LuaValue {
         match self {
             LuaValue::Nil => LuaType::Nil,
             LuaValue::Boolean(_) => LuaType::Boolean,
-            LuaValue::Integer(_) => LuaType::Integer,
+            LuaValue::Integer(_) => LuaType::Number,
             LuaValue::Number(_) => LuaType::Number,
             LuaValue::Str(_) => LuaType::String,
             LuaValue::Table(_) => LuaType::Table,
             LuaValue::Function(_) => LuaType::Function,
+        }
+    }
+}
+
+impl LuaValue {
+    pub fn convert_to_boolean(&self) -> bool {
+        match self {
+            LuaValue::Nil => false,
+            LuaValue::Boolean(b) => *b,
+            _ => true,
+        }
+    }
+
+    pub fn convert_to_integer(&self) -> Option<i64> {
+        match self {
+            LuaValue::Integer(i) => Some(*i),
+            LuaValue::Number(n) => float_to_integer(*n),
+            LuaValue::Str(s) => {
+                if let Ok(i) = s.parse() {
+                    Some(i)
+                } else {
+                    None
+                }
+            }
+            _ => None,
+        }
+    }
+
+    pub fn convert_to_float(&self) -> Option<f64> {
+        match self {
+            LuaValue::Integer(i) => Some(*i as f64),
+            LuaValue::Number(f) => Some(*f),
+            LuaValue::Str(s) => {
+                if let Ok(f) = s.parse() {
+                    Some(f)
+                } else {
+                    None
+                }
+            }
+            _ => None,
         }
     }
 }

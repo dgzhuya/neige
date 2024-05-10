@@ -24,7 +24,7 @@ pub struct LuaStack {
 
 #[allow(dead_code)]
 impl LuaStack {
-    pub fn new(size: usize, node: &Rc<RefCell<LuaNode>>) -> Rc<RefCell<Self>> {
+    pub(super) fn new(size: usize, node: &Rc<RefCell<LuaNode>>) -> Rc<RefCell<Self>> {
         Rc::new(RefCell::new(Self {
             slots: Vec::with_capacity(size),
             closure: Closure::new_fake_closure(),
@@ -36,19 +36,19 @@ impl LuaStack {
         }))
     }
 
-    pub fn top(&self) -> isize {
+    pub(super) fn top(&self) -> isize {
         self.slots.len() as isize
     }
 
-    pub fn check(&mut self, n: usize) {
+    pub(super) fn check(&mut self, n: usize) {
         self.slots.reserve(n)
     }
 
-    pub fn push(&mut self, val: LuaValue) {
+    pub(super) fn push(&mut self, val: LuaValue) {
         self.slots.push(val);
     }
 
-    pub fn push_n(&mut self, mut vals: Vec<LuaValue>, n: isize) {
+    pub(super) fn push_n(&mut self, mut vals: Vec<LuaValue>, n: isize) {
         vals.reverse();
         let n_vals = vals.len();
         let un = if n < 0 { n_vals } else { n as usize };
@@ -61,11 +61,11 @@ impl LuaStack {
         }
     }
 
-    pub fn pop(&mut self) -> LuaValue {
+    pub(super) fn pop(&mut self) -> LuaValue {
         self.slots.pop().unwrap()
     }
 
-    pub fn pop_n(&mut self, n: usize) -> Vec<LuaValue> {
+    pub(super) fn pop_n(&mut self, n: usize) -> Vec<LuaValue> {
         let mut vec = Vec::with_capacity(n);
         for _ in 0..n {
             vec.push(self.pop());
@@ -74,7 +74,7 @@ impl LuaStack {
         vec
     }
 
-    pub fn set_top(&mut self, idx: isize) {
+    pub(super) fn set_top(&mut self, idx: isize) {
         let new_top = self.abs_index(idx);
         if new_top < 0 {
             panic!("stack overflow!")
@@ -92,7 +92,7 @@ impl LuaStack {
         }
     }
 
-    pub fn abs_index(&self, idx: isize) -> isize {
+    pub(super) fn abs_index(&self, idx: isize) -> isize {
         if idx <= LUA_REGISTRY_INDEX || idx > 0 {
             idx
         } else {
@@ -100,7 +100,7 @@ impl LuaStack {
         }
     }
 
-    pub fn is_valid(&self, idx: isize) -> bool {
+    pub(super) fn is_valid(&self, idx: isize) -> bool {
         if idx < LUA_REGISTRY_INDEX {
             let uv_idx = LUA_REGISTRY_INDEX - idx - 1;
             return self.has_closure() && uv_idx < (self.closure.upvals.len() as isize);
@@ -112,7 +112,7 @@ impl LuaStack {
         abs_index > 0 && abs_index <= self.top()
     }
 
-    pub fn get(&self, idx: isize) -> LuaValue {
+    pub(super) fn get(&self, idx: isize) -> LuaValue {
         if idx < LUA_REGISTRY_INDEX {
             let uv_idx = (LUA_REGISTRY_INDEX - idx - 1) as usize;
             return if !self.has_closure() || uv_idx >= self.closure.upvals.len() {
@@ -135,7 +135,7 @@ impl LuaStack {
         }
     }
 
-    pub fn set(&mut self, idx: isize, val: LuaValue) {
+    pub(super) fn set(&mut self, idx: isize, val: LuaValue) {
         if idx < LUA_REGISTRY_INDEX {
             let uv_idx = (LUA_REGISTRY_INDEX - idx - 1) as usize;
             if self.has_closure() && uv_idx < self.closure.upvals.len() {
@@ -161,7 +161,7 @@ impl LuaStack {
         panic!("invalid index!!!")
     }
 
-    pub fn reverse(&mut self, mut from: usize, mut to: usize) {
+    pub(super) fn reverse(&mut self, mut from: usize, mut to: usize) {
         while from < to {
             self.slots.swap(from, to);
             from += 1;

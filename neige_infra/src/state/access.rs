@@ -16,11 +16,11 @@ pub trait AccessApi {
     fn is_rust_fn(&self, idx: isize) -> bool;
     fn to_boolean(&self, idx: isize) -> bool;
     fn to_integer(&self, idx: isize) -> i64;
-    fn to_integer_x(&self, idx: isize) -> (i64, bool);
+    fn to_integer_x(&self, idx: isize) -> Option<i64>;
     fn to_number(&self, idx: isize) -> f64;
-    fn to_number_x(&self, idx: isize) -> (f64, bool);
+    fn to_number_x(&self, idx: isize) -> Option<f64>;
     fn to_string(&self, idx: isize) -> String;
-    fn to_string_x(&self, idx: isize) -> (String, bool);
-    fn to_rust_fn(&self, idx: isize) -> RustFn;
+    fn to_string_x(&self, idx: isize) -> Option<String>;
+    fn to_rust_fn(&self, idx: isize) -> Option<RustFn>;
     fn raw_len(&self, idx: isize) -> usize;
 }

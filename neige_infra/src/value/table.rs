@@ -6,8 +6,8 @@ use super::value::LuaValue;
 
 #[derive(Clone, Debug)]
 pub struct LuaTable {
-    arr: RefCell<Vec<LuaValue>>,
-    map: RefCell<HashMap<LuaValue, LuaValue>>,
+    pub arr: RefCell<Vec<LuaValue>>,
+    pub map: RefCell<HashMap<LuaValue, LuaValue>>,
     rdm: usize,
 }
 
