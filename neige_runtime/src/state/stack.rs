@@ -36,10 +36,6 @@ impl LuaStack {
         }))
     }
 
-    pub(super) fn top(&self) -> isize {
-        self.slots.len() as isize
-    }
-
     pub(super) fn check(&mut self, n: usize) {
         self.slots.reserve(n)
     }
@@ -74,24 +70,6 @@ impl LuaStack {
         vec
     }
 
-    pub(super) fn set_top(&mut self, idx: isize) {
-        let new_top = self.abs_index(idx);
-        if new_top < 0 {
-            panic!("stack overflow!")
-        }
-
-        let n = self.top() - new_top;
-        if n > 0 {
-            for _ in 0..n {
-                self.pop();
-            }
-        } else if n < 0 {
-            for _ in n..0 {
-                self.push(LuaValue::Nil);
-            }
-        }
-    }
-
     pub(super) fn abs_index(&self, idx: isize) -> isize {
         if idx <= LUA_REGISTRY_INDEX || idx > 0 {
             idx
@@ -109,7 +87,7 @@ impl LuaStack {
             return true;
         }
         let abs_index = self.abs_index(idx);
-        abs_index > 0 && abs_index <= self.top()
+        abs_index > 0 && abs_index <= (self.slots.len() as isize)
     }
 
     pub(super) fn get(&self, idx: isize) -> LuaValue {
@@ -128,7 +106,7 @@ impl LuaStack {
             }
         }
         let abs_idx = self.abs_index(idx);
-        if abs_idx > 0 && abs_idx <= self.top() {
+        if abs_idx > 0 && abs_idx <= (self.slots.len() as isize) {
             self.slots[(abs_idx - 1) as usize].clone()
         } else {
             LuaValue::Nil
@@ -161,9 +139,9 @@ impl LuaStack {
         panic!("invalid index!!!")
     }
 
-    pub(super) fn reverse(&mut self, mut from: usize, mut to: usize) {
+    pub(super) fn reverse(&mut self, mut from: isize, mut to: isize) {
         while from < to {
-            self.slots.swap(from, to);
+            self.slots.swap(from as usize, to as usize);
             from += 1;
             to -= 1;
         }

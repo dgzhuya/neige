@@ -25,7 +25,7 @@ impl LuaNode {
         node
     }
 
-    pub(super) fn get_stack(&self) -> Ref<LuaStack> {
+    pub(crate) fn get_stack(&self) -> Ref<LuaStack> {
         if let Some(stack) = &self.stack {
             stack.borrow()
         } else {

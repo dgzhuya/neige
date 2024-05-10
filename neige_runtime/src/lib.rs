@@ -4,6 +4,7 @@ mod vm;
 
 #[cfg(test)]
 mod tests {
+
     use crate::state::LuaState;
 
     #[test]
