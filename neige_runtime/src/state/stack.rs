@@ -17,7 +17,7 @@ pub struct LuaStack {
     pub prev: Option<Rc<RefCell<LuaStack>>>, // 上级节点信息
     pub closure: Closure,                    // 函数信息
     pub varargs: Vec<LuaValue>,              // 传入参数信息
-    pub pc: usize,                           // 函数指令执行位置
+    pub pc: isize,                           // 函数指令执行位置
     pub node: Weak<RefCell<LuaNode>>,        // state 信息
     pub openuvs: HashMap<isize, LuaUpval>,   // 捕获的上值信息
 }

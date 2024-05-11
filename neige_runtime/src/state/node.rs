@@ -33,7 +33,7 @@ impl LuaNode {
         }
     }
 
-    pub(super) fn get_stack_mut(&self) -> RefMut<LuaStack> {
+    pub(crate) fn get_stack_mut(&self) -> RefMut<LuaStack> {
         if let Some(stack) = &self.stack {
             stack.borrow_mut()
         } else {

@@ -1,6 +1,6 @@
 use std::{fmt::Debug, hash::Hash, rc::Rc};
 
-use crate::{math::float_to_integer, proto::proto::Prototype, LuaType};
+use crate::{math::float_to_integer, proto::proto::Prototype, Constant, LuaType};
 
 use super::{
     closure::{Closure, RustFn},
@@ -16,6 +16,18 @@ pub enum LuaValue {
     Str(String),
     Table(Rc<LuaTable>),
     Function(Rc<Closure>),
+}
+
+impl From<&Constant> for LuaValue {
+    fn from(value: &Constant) -> Self {
+        match value {
+            Constant::Nil => LuaValue::Nil,
+            Constant::Boolean(b) => LuaValue::Boolean(*b),
+            Constant::Number(n) => LuaValue::Number(*n),
+            Constant::Integer(i) => LuaValue::Integer(*i),
+            Constant::Str(s) => LuaValue::Str(s.clone()),
+        }
+    }
 }
 
 impl LuaValue {
