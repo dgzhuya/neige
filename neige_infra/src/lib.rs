@@ -1,6 +1,6 @@
 pub mod code;
 mod constant;
-mod math;
+pub mod math;
 mod proto;
 pub mod state;
 mod tools;
