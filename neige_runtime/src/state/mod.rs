@@ -10,7 +10,6 @@ pub use state::LuaState;
 impl LuaApi for LuaState {}
 
 /// 用于实现栈相关函数
-#[allow(dead_code)]
 impl LuaState {
     pub(super) fn stack_get(&self, idx: isize) -> LuaValue {
         let node = self.get_node();

@@ -5,6 +5,7 @@ use std::{
 };
 
 use neige_infra::{
+    math::random,
     value::{closure::Closure, upval::LuaUpval, value::LuaValue},
     LUA_REGISTRY_INDEX,
 };
@@ -20,6 +21,13 @@ pub struct LuaStack {
     pub pc: isize,                           // 函数指令执行位置
     pub node: Weak<RefCell<LuaNode>>,        // state 信息
     pub openuvs: HashMap<isize, LuaUpval>,   // 捕获的上值信息
+    rdm: usize,
+}
+
+impl PartialEq for LuaStack {
+    fn eq(&self, other: &Self) -> bool {
+        self.rdm == other.rdm
+    }
 }
 
 #[allow(dead_code)]
@@ -33,6 +41,7 @@ impl LuaStack {
             node: Rc::downgrade(node),
             prev: None,
             openuvs: HashMap::new(),
+            rdm: random(),
         }))
     }
 

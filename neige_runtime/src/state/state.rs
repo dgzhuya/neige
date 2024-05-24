@@ -3,6 +3,8 @@ use std::{
     rc::Rc,
 };
 
+use neige_infra::value::value::LuaValue;
+
 use super::{node::LuaNode, stack::LuaStack};
 
 #[derive(Clone, Debug)]
@@ -40,5 +42,15 @@ impl LuaState {
     /// * `RefMut<LuaNode>` lua node的引用
     pub fn get_node_mut(&self) -> RefMut<LuaNode> {
         self.node.borrow_mut()
+    }
+
+    pub fn registry_get(&self, key: &LuaValue) -> LuaValue {
+        let node = self.get_node();
+        node.registry.get(key)
+    }
+
+    pub fn registry_set(&self, key: LuaValue, val: LuaValue) {
+        let node = self.get_node();
+        node.registry.put(key, val)
     }
 }

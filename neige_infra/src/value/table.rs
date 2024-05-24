@@ -1,4 +1,4 @@
-use std::{cell::RefCell, collections::HashMap, hash::Hash};
+use std::{cell::RefCell, collections::HashMap, hash::Hash, rc::Rc};
 
 use crate::math::{float_to_integer, random};
 
@@ -6,9 +6,41 @@ use super::value::LuaValue;
 
 #[derive(Clone, Debug)]
 pub struct LuaTable {
+    rdm: usize,
     pub arr: RefCell<Vec<LuaValue>>,
     pub map: RefCell<HashMap<LuaValue, LuaValue>>,
-    rdm: usize,
+    pub meta_table: RefCell<Option<Rc<LuaTable>>>,
+    keys: HashMap<LuaValue, LuaValue>,
+    last_key: LuaValue,
+    changed: RefCell<bool>,
+}
+
+impl LuaTable {
+    fn init_keys(&mut self) {
+        self.keys = HashMap::new();
+        let mut key = LuaValue::Nil;
+        let arr = self.arr.borrow().clone();
+        for (i, v) in arr.into_iter().enumerate() {
+            if v != LuaValue::Nil {
+                self.keys.insert(key.clone(), LuaValue::Integer(i as i64));
+                key = LuaValue::Integer(i as i64)
+            }
+        }
+
+        // for () in  {}
+
+        self.last_key = key
+    }
+
+    fn has_meta_field(&self, file_name: String) -> bool {
+        if let Some(m_tb) = self.meta_table.borrow().clone() {
+            let val = m_tb.get(&LuaValue::Str(file_name));
+            if val != LuaValue::Nil {
+                return true;
+            }
+        }
+        false
+    }
 }
 
 impl Hash for LuaTable {
@@ -17,16 +49,20 @@ impl Hash for LuaTable {
     }
 }
 
-#[allow(dead_code)]
 impl LuaTable {
     pub fn new(n_arr: usize, n_rec: usize) -> Self {
         Self {
+            rdm: random(),
             arr: RefCell::new(Vec::with_capacity(n_arr)),
             map: RefCell::new(HashMap::with_capacity(n_rec)),
-            rdm: random(),
+            keys: HashMap::new(),
+            meta_table: RefCell::new(None),
+            last_key: LuaValue::Nil,
+            changed: RefCell::new(false),
         }
     }
 
+    /// 获取tab长度
     pub fn len(&self) -> usize {
         self.arr.borrow().len()
     }
@@ -47,6 +83,7 @@ impl LuaTable {
         }
     }
 
+    /// 传入值
     pub fn put(&self, key: LuaValue, val: LuaValue) {
         if key.is_nil() {
             panic!("table index is not nil")
@@ -56,6 +93,9 @@ impl LuaTable {
                 panic!("table index is not NaN")
             }
         }
+
+        let mut changed = self.changed.borrow_mut();
+        *changed = true;
 
         let mut arr = self.arr.borrow_mut();
         let mut map = self.map.borrow_mut();
