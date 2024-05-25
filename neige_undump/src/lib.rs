@@ -17,7 +17,7 @@ mod tests {
     fn proto_undump_test() -> Result<()> {
         let file = read_file("data/test.out")?;
         let data = BufReader::new(file);
-        let proto = undump(data);
+        let proto = undump(data, "test.out");
         proto.list_proto();
         Ok(())
     }

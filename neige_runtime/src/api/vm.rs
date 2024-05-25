@@ -79,19 +79,20 @@ impl LuaVm for LuaState {
         let mut stack = node.get_stack_mut();
         if let Some(proto) = &stack.closure.proto {
             let sub_proto = proto.protos[idx as usize].clone();
-            let mut closure = Closure::new_lua_closure(sub_proto.clone());
+            let closure = Closure::new_lua_closure(sub_proto.clone());
             for (i, uv_info) in sub_proto.upvalues.iter().enumerate() {
                 let uv_idx = uv_info.idx as isize;
                 if uv_info.in_stack == 1 {
                     if let Some(openuv) = stack.openuvs.get(&uv_idx) {
-                        closure.upvals[i] = openuv.clone();
+                        closure.upvals.borrow_mut()[i] = openuv.clone();
                     } else {
                         let val = LuaUpval::new(self.stack_get(uv_idx));
-                        closure.upvals[i] = val.clone();
+                        closure.upvals.borrow_mut()[i] = val.clone();
                         stack.openuvs.insert(uv_idx, val);
                     }
                 } else {
-                    closure.upvals[i] = stack.closure.upvals[uv_idx as usize].clone();
+                    closure.upvals.borrow_mut()[i] =
+                        stack.closure.upvals.borrow()[uv_idx as usize].clone();
                 }
             }
             self.stack_push(LuaValue::Function(Rc::new(closure)));

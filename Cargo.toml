@@ -4,3 +4,4 @@ resolver = "2"
 [workspace.dependencies]
 anyhow = "1.0.82"
 neige_infra = { version = "0.1.0", path = "./neige_infra" }
+neige_undump = { version = "0.1.0", path = "./neige_undump" }

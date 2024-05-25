@@ -16,30 +16,50 @@ pub struct LuaTable {
 }
 
 impl LuaTable {
+    pub fn next_key(&mut self, key: &LuaValue) -> &LuaValue {
+        if self.keys.is_empty() || (key.is_nil() && self.changed.borrow_mut().clone()) {
+            self.init_keys();
+            *self.changed.borrow_mut() = false;
+        };
+        let next_key = self.keys.get(key);
+        match next_key {
+            Some(key) => key,
+            None => {
+                if !key.is_nil() && key != &self.last_key {
+                    panic!("invalid key to next")
+                } else {
+                    &LuaValue::Nil
+                }
+            }
+        }
+    }
+
     fn init_keys(&mut self) {
         self.keys = HashMap::new();
         let mut key = LuaValue::Nil;
-        let arr = self.arr.borrow().clone();
-        for (i, v) in arr.into_iter().enumerate() {
-            if v != LuaValue::Nil {
+        for (i, v) in self.arr.borrow().iter().enumerate() {
+            if !v.is_nil() {
                 self.keys.insert(key.clone(), LuaValue::Integer(i as i64));
                 key = LuaValue::Integer(i as i64)
             }
         }
 
-        // for () in  {}
+        for (k, v) in self.map.borrow().iter() {
+            if !v.is_nil() {
+                self.keys.insert(key.clone(), k.clone());
+                key = k.clone()
+            }
+        }
 
         self.last_key = key
     }
 
-    fn has_meta_field(&self, file_name: String) -> bool {
+    pub fn has_meta_field(&self, file_name: String) -> bool {
         if let Some(m_tb) = self.meta_table.borrow().clone() {
-            let val = m_tb.get(&LuaValue::Str(file_name));
-            if val != LuaValue::Nil {
-                return true;
-            }
+            !m_tb.get(&LuaValue::Str(file_name)).is_nil()
+        } else {
+            false
         }
-        false
     }
 }
 

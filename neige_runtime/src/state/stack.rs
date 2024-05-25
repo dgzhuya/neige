@@ -16,7 +16,7 @@ use super::node::LuaNode;
 pub struct LuaStack {
     pub slots: Vec<LuaValue>,                // 值信息
     pub prev: Option<Rc<RefCell<LuaStack>>>, // 上级节点信息
-    pub closure: Closure,                    // 函数信息
+    pub closure: Rc<Closure>,                // 函数信息
     pub varargs: Vec<LuaValue>,              // 传入参数信息
     pub pc: isize,                           // 函数指令执行位置
     pub node: Weak<RefCell<LuaNode>>,        // state 信息
@@ -30,12 +30,15 @@ impl PartialEq for LuaStack {
     }
 }
 
-#[allow(dead_code)]
 impl LuaStack {
-    pub(super) fn new(size: usize, node: &Rc<RefCell<LuaNode>>) -> Rc<RefCell<Self>> {
+    pub fn new(
+        size: usize,
+        node: &Rc<RefCell<LuaNode>>,
+        closure: Rc<Closure>,
+    ) -> Rc<RefCell<Self>> {
         Rc::new(RefCell::new(Self {
             slots: Vec::with_capacity(size),
-            closure: Closure::new_fake_closure(),
+            closure,
             varargs: Vec::new(),
             pc: 0,
             node: Rc::downgrade(node),
@@ -44,16 +47,18 @@ impl LuaStack {
             rdm: random(),
         }))
     }
+}
 
-    pub(super) fn check(&mut self, n: usize) {
+impl LuaStack {
+    pub(crate) fn check(&mut self, n: usize) {
         self.slots.reserve(n)
     }
 
-    pub(super) fn push(&mut self, val: LuaValue) {
+    pub(crate) fn push(&mut self, val: LuaValue) {
         self.slots.push(val);
     }
 
-    pub(super) fn push_n(&mut self, mut vals: Vec<LuaValue>, n: isize) {
+    pub(crate) fn push_n(&mut self, mut vals: Vec<LuaValue>, n: isize) {
         vals.reverse();
         let n_vals = vals.len();
         let un = if n < 0 { n_vals } else { n as usize };
@@ -66,11 +71,11 @@ impl LuaStack {
         }
     }
 
-    pub(super) fn pop(&mut self) -> LuaValue {
+    pub(crate) fn pop(&mut self) -> LuaValue {
         self.slots.pop().unwrap()
     }
 
-    pub(super) fn pop_n(&mut self, n: usize) -> Vec<LuaValue> {
+    pub(crate) fn pop_n(&mut self, n: usize) -> Vec<LuaValue> {
         let mut vec = Vec::with_capacity(n);
         for _ in 0..n {
             vec.push(self.pop());
@@ -79,7 +84,7 @@ impl LuaStack {
         vec
     }
 
-    pub(super) fn abs_index(&self, idx: isize) -> isize {
+    pub(crate) fn abs_index(&self, idx: isize) -> isize {
         if idx <= LUA_REGISTRY_INDEX || idx > 0 {
             idx
         } else {
@@ -87,10 +92,10 @@ impl LuaStack {
         }
     }
 
-    pub(super) fn is_valid(&self, idx: isize) -> bool {
+    pub(crate) fn is_valid(&self, idx: isize) -> bool {
         if idx < LUA_REGISTRY_INDEX {
             let uv_idx = LUA_REGISTRY_INDEX - idx - 1;
-            return self.has_closure() && uv_idx < (self.closure.upvals.len() as isize);
+            return self.has_closure() && uv_idx < (self.closure.upvals.borrow().len() as isize);
         }
         if idx == LUA_REGISTRY_INDEX {
             return true;
@@ -99,13 +104,13 @@ impl LuaStack {
         abs_index > 0 && abs_index <= (self.slots.len() as isize)
     }
 
-    pub(super) fn get(&self, idx: isize) -> LuaValue {
+    pub(crate) fn get(&self, idx: isize) -> LuaValue {
         if idx < LUA_REGISTRY_INDEX {
             let uv_idx = (LUA_REGISTRY_INDEX - idx - 1) as usize;
-            return if !self.has_closure() || uv_idx >= self.closure.upvals.len() {
+            return if !self.has_closure() || uv_idx >= self.closure.upvals.borrow().len() {
                 LuaValue::Nil
             } else {
-                self.closure.upvals[uv_idx].val.clone()
+                self.closure.upvals.borrow()[uv_idx].val.clone()
             };
         }
         if idx == LUA_REGISTRY_INDEX {
@@ -122,11 +127,11 @@ impl LuaStack {
         }
     }
 
-    pub(super) fn set(&mut self, idx: isize, val: LuaValue) {
+    pub(crate) fn set(&mut self, idx: isize, val: LuaValue) {
         if idx < LUA_REGISTRY_INDEX {
             let uv_idx = (LUA_REGISTRY_INDEX - idx - 1) as usize;
-            if self.has_closure() && uv_idx < self.closure.upvals.len() {
-                self.closure.upvals[uv_idx].set_val(val);
+            if self.has_closure() && uv_idx < self.closure.upvals.borrow().len() {
+                self.closure.upvals.borrow_mut()[uv_idx].set_val(val);
                 return;
             }
         }
@@ -148,7 +153,7 @@ impl LuaStack {
         panic!("invalid index!!!")
     }
 
-    pub(super) fn reverse(&mut self, mut from: isize, mut to: isize) {
+    pub(crate) fn reverse(&mut self, mut from: isize, mut to: isize) {
         while from < to {
             self.slots.swap(from as usize, to as usize);
             from += 1;

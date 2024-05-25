@@ -5,7 +5,7 @@ mod state;
 
 use neige_infra::{state::LuaApi, value::value::LuaValue};
 
-pub use state::LuaState;
+pub use {stack::LuaStack, state::LuaState};
 
 impl LuaApi for LuaState {}
 

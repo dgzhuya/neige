@@ -6,7 +6,6 @@ use neige_infra::{
 
 use crate::state::LuaState;
 
-#[allow(unused_variables)]
 impl AccessApi for LuaState {
     /// 获取类型名
     fn tp_name(&self, tp: LuaType) -> &str {
@@ -119,7 +118,7 @@ impl AccessApi for LuaState {
         let val = self.stack_get(idx);
         if let LuaValue::Function(f) = val {
             if let Some(f) = &f.rust_fn {
-                return Some(*f.as_ref());
+                return Some(*f);
             }
         }
         None

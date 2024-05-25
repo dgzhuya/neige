@@ -3,7 +3,10 @@ use std::{
     rc::Rc,
 };
 
-use neige_infra::{value::table::LuaTable, LUA_MINSTACK};
+use neige_infra::{
+    value::{closure::Closure, table::LuaTable},
+    LUA_MINSTACK,
+};
 
 use super::stack::LuaStack;
 
@@ -20,7 +23,7 @@ impl LuaNode {
             stack: None,
             registry: Rc::new(table),
         }));
-        let stack = LuaStack::new(LUA_MINSTACK, &node);
+        let stack = LuaStack::new(LUA_MINSTACK, &node, Rc::new(Closure::new_fake_closure()));
         node.borrow_mut().stack = Some(stack);
         node
     }
