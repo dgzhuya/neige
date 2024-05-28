@@ -4,8 +4,8 @@ use std::{
 };
 
 use neige_infra::{
-    value::{closure::Closure, table::LuaTable},
-    LUA_MINSTACK,
+    value::{closure::Closure, table::LuaTable, value::LuaValue},
+    LUA_MINSTACK, LUA_REGISTRY_INDEX, LUA_RIDX_GLOBALS,
 };
 
 use super::stack::LuaStack;
@@ -19,6 +19,10 @@ pub struct LuaNode {
 impl LuaNode {
     pub(super) fn new() -> Rc<RefCell<Self>> {
         let table = LuaTable::new(0, 0);
+        table.put(
+            LuaValue::Integer(LUA_RIDX_GLOBALS),
+            LuaValue::new_table(0, 0),
+        );
         let node = Rc::new(RefCell::new(Self {
             stack: None,
             registry: Rc::new(table),

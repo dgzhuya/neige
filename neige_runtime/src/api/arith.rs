@@ -4,13 +4,15 @@ use crate::state::LuaState;
 use neige_infra::LuaArith as Arith;
 
 impl ArithApi for LuaState {
-    fn arith(&self, op: Arith) {
+    fn arith(&mut self, op: Arith) {
         let b = self.stack_pop();
         let a = if op == Arith::Unm || op == Arith::BNot {
             b.clone()
         } else {
             self.stack_pop()
         };
+        let c = a.clone();
+        let d = b.clone();
         let result = match op {
             Arith::Add => do_arith(a, b, |x, y| x + y, |x, y| x + y),
             Arith::Sub => do_arith(a, b, |x, y| x - y, |x, y| x - y),
@@ -31,6 +33,12 @@ impl ArithApi for LuaState {
             self.stack_push(res);
             return;
         }
+        let result = self.call_meta_method(c, d, op.get_meta_name().into());
+        if let Some(res) = result {
+            self.stack_push(res);
+            return;
+        }
+        panic!("arithmetic error!")
     }
 }
 

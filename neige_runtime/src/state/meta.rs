@@ -12,7 +12,7 @@ impl LuaState {
         &mut self,
         a: LuaValue,
         b: LuaValue,
-        mm_name: String,
+        mm_name: &str,
     ) -> Option<LuaValue> {
         let mm = match self.get_meta_field(&a, &mm_name) {
             LuaValue::Nil => match self.get_meta_field(&b, &mm_name) {

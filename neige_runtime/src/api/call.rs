@@ -2,7 +2,7 @@ use std::{fs::File, io::BufReader, rc::Rc};
 
 use neige_infra::{
     state::{CallApi, LuaVm, StackApi},
-    value::{closure::Closure, value::LuaValue},
+    value::{closure::Closure, upval::LuaUpval, value::LuaValue},
     LUA_RIDX_GLOBALS,
 };
 use neige_undump::undump;
@@ -13,10 +13,14 @@ impl CallApi for LuaState {
     fn load(&mut self, chunk: BufReader<File>, chunk_name: &str, mode: &str) {
         println!("{}", mode);
         let proto = undump(chunk, chunk_name);
-        if proto.upvalues.len() > 0 {
-            let env = self.registry_get(&LuaValue::Integer(LUA_RIDX_GLOBALS));
-        }
+        let proto_len = proto.upvalues.len();
+        let env = LuaUpval::new(self.registry_get(&LuaValue::Integer(LUA_RIDX_GLOBALS)));
         let c = LuaValue::new_lua_closure(proto);
+        if proto_len > 0 {
+            if let LuaValue::Function(c) = &c {
+                c.upvals.borrow_mut()[0] = env
+            }
+        }
         self.stack_push(c);
     }
 

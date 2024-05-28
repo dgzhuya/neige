@@ -4,5 +4,5 @@ use crate::LuaArith;
 ///
 /// 数量 `1`
 pub trait ArithApi {
-    fn arith(&self, op: LuaArith);
+    fn arith(&mut self, op: LuaArith);
 }
