@@ -5,7 +5,7 @@ use std::{
 
 use neige_infra::{
     value::{closure::Closure, table::LuaTable, value::LuaValue},
-    LUA_MINSTACK, LUA_REGISTRY_INDEX, LUA_RIDX_GLOBALS,
+    LUA_MINSTACK, LUA_RIDX_GLOBALS,
 };
 
 use super::stack::LuaStack;
