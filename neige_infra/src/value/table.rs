@@ -10,48 +10,52 @@ pub struct LuaTable {
     pub arr: RefCell<Vec<LuaValue>>,
     pub map: RefCell<HashMap<LuaValue, LuaValue>>,
     pub meta_table: RefCell<Option<Rc<LuaTable>>>,
-    keys: HashMap<LuaValue, LuaValue>,
-    last_key: LuaValue,
+    keys: RefCell<HashMap<LuaValue, LuaValue>>,
+    last_key: RefCell<LuaValue>,
     changed: RefCell<bool>,
 }
 
 impl LuaTable {
-    pub fn next_key(&mut self, key: &LuaValue) -> &LuaValue {
-        if self.keys.is_empty() || (key.is_nil() && self.changed.borrow_mut().clone()) {
+    pub fn next_key(&self, key: &LuaValue) -> LuaValue {
+        if self.keys.borrow().is_empty() || (key.is_nil() && self.changed.borrow_mut().clone()) {
             self.init_keys();
             *self.changed.borrow_mut() = false;
         };
-        let next_key = self.keys.get(key);
+        let last_key = self.last_key.borrow().clone();
+        let keys = self.keys.borrow();
+        let next_key = keys.get(key);
         match next_key {
-            Some(key) => key,
+            Some(key) => key.clone(),
             None => {
-                if !key.is_nil() && key != &self.last_key {
+                if !key.is_nil() && key != &last_key {
                     panic!("invalid key to next")
                 } else {
-                    &LuaValue::Nil
+                    LuaValue::Nil
                 }
             }
         }
     }
 
-    fn init_keys(&mut self) {
-        self.keys = HashMap::new();
+    fn init_keys(&self) {
+        *self.keys.borrow_mut() = HashMap::new();
         let mut key = LuaValue::Nil;
         for (i, v) in self.arr.borrow().iter().enumerate() {
             if !v.is_nil() {
-                self.keys.insert(key.clone(), LuaValue::Integer(i as i64));
+                self.keys
+                    .borrow_mut()
+                    .insert(key.clone(), LuaValue::Integer(i as i64));
                 key = LuaValue::Integer(i as i64)
             }
         }
 
         for (k, v) in self.map.borrow().iter() {
             if !v.is_nil() {
-                self.keys.insert(key.clone(), k.clone());
+                self.keys.borrow_mut().insert(key.clone(), k.clone());
                 key = k.clone()
             }
         }
 
-        self.last_key = key
+        *self.last_key.borrow_mut() = key
     }
 
     pub fn has_meta_field(&self, file_name: String) -> bool {
@@ -75,9 +79,9 @@ impl LuaTable {
             rdm: random(),
             arr: RefCell::new(Vec::with_capacity(n_arr)),
             map: RefCell::new(HashMap::with_capacity(n_rec)),
-            keys: HashMap::new(),
+            keys: RefCell::new(HashMap::new()),
             meta_table: RefCell::new(None),
-            last_key: LuaValue::Nil,
+            last_key: RefCell::new(LuaValue::Nil),
             changed: RefCell::new(false),
         }
     }
