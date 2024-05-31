@@ -8,7 +8,6 @@ use neige_infra::{
 
 use crate::state::LuaState;
 
-#[allow(unused_variables)]
 impl LuaVm for LuaState {
     fn pc(&self) -> isize {
         let node = self.get_node();

@@ -2,7 +2,6 @@ use neige_infra::{state::StackApi, value::value::LuaValue};
 
 use crate::state::LuaState;
 
-#[allow(unused_variables)]
 impl StackApi for LuaState {
     fn get_top(&self) -> isize {
         let node = self.get_node();
@@ -35,7 +34,7 @@ impl StackApi for LuaState {
 
     fn replace(&mut self, idx: isize) {
         let val = self.stack_pop();
-        let val = self.stack_set(idx, val);
+        self.stack_set(idx, val);
     }
 
     fn insert(&mut self, idx: isize) {
