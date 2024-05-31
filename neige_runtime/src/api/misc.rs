@@ -23,7 +23,7 @@ impl MiscApi for LuaState {
         }
     }
 
-    fn error(&mut self) {
+    fn error(&mut self) -> isize {
         let val = self.stack_pop();
         panic!("{:?}", val)
     }

@@ -54,7 +54,7 @@ impl LuaState {
         None
     }
 
-    pub fn set_meta_table(&self, val: &LuaValue, mt: Rc<LuaTable>) {
+    pub fn inline_set_meta_table(&self, val: &LuaValue, mt: Rc<LuaTable>) {
         if let LuaValue::Table(tbl) = val {
             let mut m_tb = tbl.meta_table.borrow_mut();
             *m_tb = Some(mt);

@@ -1,40 +1,56 @@
-use neige_infra::state::PushApi;
+use neige_infra::{
+    state::{PushApi, SetApi},
+    value::{closure::RustFn, upval::LuaUpval, value::LuaValue},
+    LUA_RIDX_GLOBALS,
+};
 
 use crate::state::LuaState;
 
-#[allow(unused_variables)]
 impl PushApi for LuaState {
     fn push_nil(&mut self) {
-        todo!()
+        self.stack_push(LuaValue::Nil)
     }
 
     fn push_boolean(&mut self, b: bool) {
-        todo!()
+        self.stack_push(LuaValue::Boolean(b))
     }
 
     fn push_integer(&mut self, i: i64) {
-        todo!()
+        self.stack_push(LuaValue::Integer(i))
     }
 
     fn push_number(&mut self, f: f64) {
-        todo!()
+        self.stack_push(LuaValue::Number(f))
     }
 
     fn push_string(&mut self, s: String) {
-        todo!()
+        self.stack_push(LuaValue::Str(s))
     }
 
-    fn push_rust_fn(&mut self, f: neige_infra::value::closure::RustFn) {}
+    fn push_rust_fn(&mut self, f: RustFn) {
+        self.stack_push(LuaValue::new_rust_closure(f, 0))
+    }
 
-    fn register(&mut self, name: String, f: neige_infra::value::closure::RustFn) {
-        todo!()
+    fn register(&mut self, name: &str, f: RustFn) {
+        self.push_rust_fn(f);
+        self.set_global(name.into());
     }
 
     fn push_global_table(&mut self) {
-        todo!()
+        let global = self.registry_get(&LuaValue::Integer(LUA_RIDX_GLOBALS));
+        self.stack_push(global)
     }
 
-    fn push_rust_closure(&mut self, f: neige_infra::value::closure::RustFn, n: isize) {
-        todo!()
+    fn push_rust_closure(&mut self, f: RustFn, n: usize) {
+        let closure = LuaValue::new_rust_closure(f, n);
+        let mut i = n;
+        while i > 0 {
+            let val = self.stack_pop();
+            if let LuaValue::Function(c) = &closure {
+                c.upvals.borrow_mut()[i - 1] = LuaUpval::new(val);
+            }
+            i -= 1
+        }
+        self.stack_push(closure)
     }
 }

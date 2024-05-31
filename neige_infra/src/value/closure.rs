@@ -4,7 +4,7 @@ use crate::{math::random, proto::proto::Prototype, state::LuaApi};
 
 use super::upval::LuaUpval;
 
-pub type RustFn = fn(&dyn LuaApi) -> usize;
+pub type RustFn = fn(&mut dyn LuaApi) -> usize;
 
 #[derive(Debug, Clone)]
 pub struct Closure {
