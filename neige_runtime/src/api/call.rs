@@ -1,6 +1,7 @@
 use std::{fs::File, io::BufReader, rc::Rc};
 
 use neige_infra::{
+    code::inst::Instruction,
     state::{CallApi, LuaVm, StackApi},
     value::{closure::Closure, upval::LuaUpval, value::LuaValue},
     LUA_RIDX_GLOBALS,
@@ -80,7 +81,11 @@ impl LuaState {
 
     fn run_lua_closure(&mut self) {
         loop {
-            let code = self.fetch();
+            let inst = self.fetch();
+            self.execute(&inst);
+            if let Instruction::Return(_, _, _) = inst {
+                break;
+            }
         }
     }
 

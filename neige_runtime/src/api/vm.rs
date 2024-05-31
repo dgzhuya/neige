@@ -1,6 +1,7 @@
 use std::rc::Rc;
 
 use neige_infra::{
+    code::inst::Instruction,
     state::{LuaVm, StackApi},
     value::{closure::Closure, upval::LuaUpval, value::LuaValue},
 };
@@ -21,13 +22,13 @@ impl LuaVm for LuaState {
         stack.pc += n;
     }
 
-    fn fetch(&self) -> u32 {
+    fn fetch(&self) -> Instruction {
         let node = self.get_node();
         let mut stack = node.get_stack_mut();
         if let Some(proto) = &stack.closure.proto {
             let i = proto.code[stack.pc as usize];
             stack.pc += 1;
-            i
+            i.into()
         } else {
             panic!("state overflow")
         }

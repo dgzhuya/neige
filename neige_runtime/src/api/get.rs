@@ -4,15 +4,15 @@ use crate::state::LuaState;
 
 #[allow(unused_variables)]
 impl GetApi for LuaState {
-    fn new_tabel(&mut self) {
+    fn new_table(&mut self) {
         todo!()
     }
 
-    fn create_tabel(&mut self, n_arr: usize, n_rec: usize) {
+    fn create_table(&mut self, n_arr: usize, n_rec: usize) {
         todo!()
     }
 
-    fn get_tabel(&mut self, idx: isize) -> neige_infra::LuaType {
+    fn get_table(&mut self, idx: isize) -> neige_infra::LuaType {
         todo!()
     }
 

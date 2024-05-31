@@ -4,7 +4,7 @@ use crate::state::LuaState;
 
 #[allow(unused_variables)]
 impl SetApi for LuaState {
-    fn set_tabel(&mut self, idx: isize) {
+    fn set_table(&mut self, idx: isize) {
         todo!()
     }
 

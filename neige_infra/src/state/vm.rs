@@ -1,3 +1,5 @@
+use crate::code::inst::Instruction;
+
 use super::LuaApi;
 
 /// VM操作
@@ -6,7 +8,7 @@ use super::LuaApi;
 pub trait LuaVm: LuaApi {
     fn pc(&self) -> isize;
     fn add_pc(&mut self, n: isize);
-    fn fetch(&self) -> u32;
+    fn fetch(&self) -> Instruction;
     fn get_const(&mut self, idx: isize);
     fn get_rk(&mut self, rk: isize);
     fn register_count(&self) -> u8;
