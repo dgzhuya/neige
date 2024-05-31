@@ -58,9 +58,9 @@ impl LuaTable {
         *self.last_key.borrow_mut() = key
     }
 
-    pub fn has_meta_field(&self, file_name: String) -> bool {
+    pub fn has_meta_field(&self, field_name: &str) -> bool {
         if let Some(m_tb) = self.meta_table.borrow().clone() {
-            !m_tb.get(&LuaValue::Str(file_name)).is_nil()
+            !m_tb.get(&LuaValue::Str(field_name.into())).is_nil()
         } else {
             false
         }

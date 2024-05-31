@@ -54,13 +54,21 @@ impl LuaState {
         None
     }
 
-    pub fn inline_set_meta_table(&self, val: &LuaValue, mt: Rc<LuaTable>) {
+    pub fn inline_set_meta_table(&self, val: &LuaValue, mt: Option<Rc<LuaTable>>) {
         if let LuaValue::Table(tbl) = val {
             let mut m_tb = tbl.meta_table.borrow_mut();
-            *m_tb = Some(mt);
+            if let Some(mt) = mt {
+                *m_tb = Some(mt)
+            } else {
+                *m_tb = None
+            }
             return;
         }
         let key = LuaValue::Str(format!("_MT{}", val.type_of()));
-        self.registry_set(key, LuaValue::Table(mt));
+        if let Some(mt) = mt {
+            self.registry_set(key, LuaValue::Table(mt));
+        } else {
+            self.registry_set(key, LuaValue::Nil);
+        }
     }
 }
