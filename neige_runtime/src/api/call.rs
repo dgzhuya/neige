@@ -11,8 +11,8 @@ use neige_undump::undump;
 use crate::state::{LuaStack, LuaState};
 
 impl CallApi for LuaState {
-    fn load(&mut self, chunk: BufReader<File>, chunk_name: &str, mode: &str) {
-        println!("{}", mode);
+    fn load(&mut self, chunk: BufReader<File>, chunk_name: &str, _mode: &str) {
+        // println!("{}", mode);
         let proto = undump(chunk, chunk_name);
         let proto_len = proto.upvalues.len();
         let env = self.registry_get(&LuaValue::Integer(LUA_RIDX_GLOBALS));

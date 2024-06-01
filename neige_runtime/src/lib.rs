@@ -1,6 +1,6 @@
-mod api;
-mod libs;
-mod state;
+pub mod api;
+pub mod libs;
+pub mod state;
 mod vm;
 
 #[cfg(test)]

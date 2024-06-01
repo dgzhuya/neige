@@ -45,7 +45,7 @@ fn lua_print(ls: &mut dyn LuaApi) -> usize {
 }
 
 impl LuaState {
-    pub(crate) fn aux_lib(&mut self) {
+    pub fn aux_lib(&mut self) {
         self.register("print", lua_print);
         self.register("getmetatable", get_meta_table);
         self.register("setmetatable", set_meta_table);
