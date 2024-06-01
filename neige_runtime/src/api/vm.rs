@@ -34,11 +34,14 @@ impl LuaVm for LuaState {
     }
 
     fn get_const(&mut self, idx: isize) {
-        let node = self.get_node();
-        let stack = node.get_stack_mut();
-        if let Some(proto) = &stack.closure.proto {
-            let i = &proto.constants[idx as usize];
-            self.stack_push(i.into());
+        let proto = {
+            let node = self.get_node();
+            let stack = node.get_stack();
+            &stack.closure.proto.clone()
+        };
+        if let Some(proto) = proto {
+            let val = proto.constants[idx as usize].to_value();
+            self.stack_push(val)
         } else {
             panic!("state overflow")
         }
@@ -46,7 +49,7 @@ impl LuaVm for LuaState {
 
     fn get_rk(&mut self, rk: isize) {
         if rk > 0xff {
-            self.get_const(rk)
+            self.get_const(rk & 0xff)
         } else {
             self.push_value(rk + 1)
         }

@@ -27,7 +27,11 @@ impl Closure {
 
     pub fn new_lua_closure(proto: Rc<Prototype>) -> Self {
         let upvals = RefCell::new(if proto.upvalues.len() > 0 {
-            Vec::with_capacity(proto.upvalues.len())
+            let mut vec = Vec::with_capacity(proto.upvalues.len());
+            for _ in 0..proto.upvalues.len() {
+                vec.push(LuaUpval::new_fake())
+            }
+            vec
         } else {
             Vec::new()
         });
@@ -40,10 +44,14 @@ impl Closure {
     }
 
     pub fn new_rust_closure(f: RustFn, n_upvals: usize) -> Self {
+        let mut upvals = Vec::with_capacity(n_upvals);
+        for _ in 0..n_upvals {
+            upvals.push(LuaUpval::new_fake())
+        }
         Self {
             proto: None,
             rust_fn: Some(f),
-            upvals: RefCell::new(Vec::with_capacity(n_upvals)),
+            upvals: RefCell::new(upvals),
             rdm: random(),
         }
     }

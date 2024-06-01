@@ -10,6 +10,10 @@ impl LuaUpval {
         Self { val }
     }
 
+    pub fn new_fake() -> Self {
+        Self { val: LuaValue::Nil }
+    }
+
     pub fn set_val(&mut self, val: LuaValue) {
         self.val = val
     }

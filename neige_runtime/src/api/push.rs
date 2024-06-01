@@ -1,6 +1,6 @@
 use neige_infra::{
     state::{PushApi, SetApi},
-    value::{closure::RustFn, upval::LuaUpval, value::LuaValue},
+    value::{closure::RustFn, value::LuaValue},
     LUA_RIDX_GLOBALS,
 };
 
@@ -47,7 +47,7 @@ impl PushApi for LuaState {
         while i > 0 {
             let val = self.stack_pop();
             if let LuaValue::Function(c) = &closure {
-                c.upvals.borrow_mut()[i - 1] = LuaUpval::new(val);
+                c.upvals.borrow_mut()[i - 1].set_val(val);
             }
             i -= 1
         }

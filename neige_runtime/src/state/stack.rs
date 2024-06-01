@@ -19,6 +19,7 @@ pub struct LuaStack {
     pub closure: Rc<Closure>,                // 函数信息
     pub varargs: Vec<LuaValue>,              // 传入参数信息
     pub pc: isize,                           // 函数指令执行位置
+    pub top: usize,                          // 栈顶位置
     pub node: Weak<RefCell<LuaNode>>,        // state 信息
     pub openuvs: HashMap<isize, LuaUpval>,   // 捕获的上值信息
     rdm: usize,
@@ -36,26 +37,39 @@ impl LuaStack {
         node: &Rc<RefCell<LuaNode>>,
         closure: Rc<Closure>,
     ) -> Rc<RefCell<Self>> {
-        Rc::new(RefCell::new(Self {
-            slots: Vec::with_capacity(size),
+        let mut slots = Vec::with_capacity(size);
+        for _ in 0..size {
+            slots.push(LuaValue::Nil)
+        }
+        let stack = Self {
+            slots,
             closure,
             varargs: Vec::new(),
             pc: 0,
+            top: 0,
             node: Rc::downgrade(node),
             prev: None,
             openuvs: HashMap::new(),
             rdm: random(),
-        }))
+        };
+        Rc::new(RefCell::new(stack))
     }
 }
 
 impl LuaStack {
     pub(crate) fn check(&mut self, n: usize) {
-        self.slots.reserve(n)
+        let free = self.slots.len() - self.top;
+        for _ in free..n {
+            self.slots.push(LuaValue::Nil)
+        }
     }
 
     pub(crate) fn push(&mut self, val: LuaValue) {
-        self.slots.push(val);
+        if self.slots.len() == self.top {
+            panic!("stack overflow!")
+        }
+        self.slots[self.top] = val;
+        self.top += 1;
     }
 
     pub(crate) fn push_n(&mut self, mut vals: Vec<LuaValue>, n: isize) {
@@ -72,7 +86,11 @@ impl LuaStack {
     }
 
     pub(crate) fn pop(&mut self) -> LuaValue {
-        self.slots.pop().unwrap()
+        if self.top < 1 {
+            panic!("stack overflow!")
+        }
+        self.top -= 1;
+        std::mem::replace(&mut self.slots[self.top], LuaValue::Nil)
     }
 
     pub(crate) fn pop_n(&mut self, n: usize) -> Vec<LuaValue> {
@@ -88,7 +106,7 @@ impl LuaStack {
         if idx <= LUA_REGISTRY_INDEX || idx > 0 {
             idx
         } else {
-            idx + (self.slots.len() as isize) + 1
+            idx + (self.top as isize) + 1
         }
     }
 
@@ -100,8 +118,8 @@ impl LuaStack {
         if idx == LUA_REGISTRY_INDEX {
             return true;
         }
-        let abs_index = self.abs_index(idx);
-        abs_index > 0 && abs_index <= (self.slots.len() as isize)
+        let abs_index = self.abs_index(idx) as usize;
+        abs_index > 0 && abs_index <= self.top
     }
 
     pub(crate) fn get(&self, idx: isize) -> LuaValue {
@@ -119,9 +137,9 @@ impl LuaStack {
                 return LuaValue::Table(n.registry.clone());
             }
         }
-        let abs_idx = self.abs_index(idx);
-        if abs_idx > 0 && abs_idx <= (self.slots.len() as isize) {
-            self.slots[(abs_idx - 1) as usize].clone()
+        let abs_idx = self.abs_index(idx) as usize;
+        if abs_idx > 0 && abs_idx <= self.top {
+            self.slots[abs_idx - 1].clone()
         } else {
             LuaValue::Nil
         }
@@ -145,9 +163,9 @@ impl LuaStack {
                 }
             }
         }
-        let abs_idx = self.abs_index(idx);
+        let abs_idx = self.abs_index(idx) as usize;
         if abs_idx > 0 {
-            self.slots[(abs_idx - 1) as usize] = val;
+            self.slots[abs_idx - 1] = val;
             return;
         }
         panic!("invalid index!!!")

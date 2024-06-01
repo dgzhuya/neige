@@ -19,7 +19,7 @@ impl LuaState {
     pub(super) fn push_func_and_args(&mut self, a: isize, b: isize) -> isize {
         if b >= 1 {
             self.check_stack(b as usize);
-            for i in a..=a + b {
+            for i in a..a + b {
                 self.push_value(i)
             }
             b - 1

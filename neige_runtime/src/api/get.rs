@@ -64,7 +64,7 @@ impl LuaState {
         if let LuaValue::Table(tbl) = &t {
             let v = tbl.get(&k);
             let v_type = v.type_of();
-            if raw || !v.is_nil() || tbl.has_meta_field("__index") {
+            if raw || !v.is_nil() || !tbl.has_meta_field("__index") {
                 self.stack_push(v);
                 return v_type;
             }

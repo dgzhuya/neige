@@ -44,7 +44,6 @@ fn lua_print(ls: &mut dyn LuaApi) -> usize {
     0
 }
 
-#[allow(dead_code)]
 impl LuaState {
     pub(crate) fn aux_lib(&mut self) {
         self.register("print", lua_print);

@@ -274,7 +274,7 @@ impl LuaState {
 
                 if b_is_zero {
                     let register_count = self.register_count() as isize;
-                    for j in register_count..=self.get_top() {
+                    for j in register_count..=self.get_top() as isize {
                         idx += 1;
                         self.push_value(j);
                         self.set_i(a, idx)

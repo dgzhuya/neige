@@ -1,5 +1,7 @@
 use std::rc::Rc;
 
+use crate::value::value::LuaValue;
+
 #[derive(Debug)]
 pub struct Prototype {
     pub source: Option<String>,
@@ -47,6 +49,16 @@ impl Constant {
             Constant::Number(f) => format!("{}", f),
             Constant::Integer(i) => format!("{}", i),
             Constant::Str(s) => format!("{:?}", s),
+        }
+    }
+
+    pub fn to_value(&self) -> LuaValue {
+        match self {
+            Constant::Nil => LuaValue::Nil,
+            Constant::Boolean(b) => LuaValue::Boolean(*b),
+            Constant::Number(n) => LuaValue::Number(*n),
+            Constant::Integer(i) => LuaValue::Integer(*i),
+            Constant::Str(s) => LuaValue::Str(s.clone()),
         }
     }
 }

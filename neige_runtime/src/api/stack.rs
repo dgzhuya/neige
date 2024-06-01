@@ -6,7 +6,7 @@ impl StackApi for LuaState {
     fn get_top(&self) -> isize {
         let node = self.get_node();
         let stack = node.get_stack();
-        stack.slots.len() as isize
+        stack.top as isize
     }
 
     fn abs_index(&self, idx: isize) -> isize {
@@ -47,7 +47,7 @@ impl StackApi for LuaState {
     }
 
     fn rotate(&mut self, idx: isize, n: isize) {
-        let t = self.get_top() - 1;
+        let t = self.get_top() as isize - 1;
         let p = self.abs_index(idx) - 1;
         let m = if n > 0 { t - n } else { p - n - 1 };
         self.stack_reverse(p, m);
