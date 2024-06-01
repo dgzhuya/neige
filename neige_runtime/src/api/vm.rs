@@ -94,13 +94,13 @@ impl LuaVm for LuaState {
                     if let Some(openuv) = stack.openuvs.get(&uv_idx) {
                         closure.upvals.borrow_mut()[i] = openuv.clone();
                     } else {
-                        let val = LuaUpval::new(stack.get(uv_idx));
-                        closure.upvals.borrow_mut()[i] = val.clone();
-                        stack.openuvs.insert(uv_idx, val);
+                        let val = stack.get(uv_idx + 1);
+                        closure.upvals.borrow_mut()[i].set_val(val.clone());
+                        stack.openuvs.insert(uv_idx, LuaUpval::new(val));
                     }
                 } else {
-                    closure.upvals.borrow_mut()[i] =
-                        stack.closure.upvals.borrow()[uv_idx as usize].clone();
+                    let upval = stack.closure.upvals.borrow()[uv_idx as usize].clone();
+                    closure.upvals.borrow_mut()[i] = upval;
                 }
             }
             stack.push(LuaValue::Function(Rc::new(closure)));
