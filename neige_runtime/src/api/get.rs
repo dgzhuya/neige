@@ -71,7 +71,7 @@ impl LuaState {
         }
 
         if !raw {
-            let mf = self.get_meta_field(&t, "__index");
+            let mf = self.inline_get_meta_field(&t, "__index");
             match mf {
                 LuaValue::Table(_) => {
                     return self.inline_get_table(mf, k, false);

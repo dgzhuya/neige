@@ -30,7 +30,7 @@ impl CallApi for LuaState {
         let c = if let LuaValue::Function(c) = val {
             Some(c)
         } else {
-            let val = self.get_meta_field(&val, "__call");
+            let val = self.inline_get_meta_field(&val, "__call");
             if let LuaValue::Function(c) = val.clone() {
                 self.stack_push(val);
                 self.insert(-(n_args + 2));

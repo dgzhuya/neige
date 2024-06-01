@@ -65,7 +65,7 @@ impl LuaState {
             }
         }
         if !raw {
-            let mf = self.get_meta_field(&t, "__newindex");
+            let mf = self.inline_get_meta_field(&t, "__newindex");
             match &mf {
                 LuaValue::Table(_) => {
                     self.inline_set_table(mf, k, v, false);

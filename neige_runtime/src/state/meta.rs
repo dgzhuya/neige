@@ -14,30 +14,34 @@ impl LuaState {
         b: LuaValue,
         mm_name: &str,
     ) -> Option<LuaValue> {
-        let mm = match self.get_meta_field(&a, &mm_name) {
-            LuaValue::Nil => match self.get_meta_field(&b, &mm_name) {
+        let mm = match self.inline_get_meta_field(&a, &mm_name) {
+            LuaValue::Nil => match self.inline_get_meta_field(&b, &mm_name) {
                 LuaValue::Nil => return None,
                 val => val,
             },
             val => val,
         };
-        self.stack_check(4);
-        self.stack_push(mm);
-        self.stack_push(a);
-        self.stack_push(b);
-        self.call(2, 1);
-        Some(self.stack_pop())
+        if let LuaValue::Function(_) = &mm {
+            self.stack_check(4);
+            self.stack_push(mm);
+            self.stack_push(a);
+            self.stack_push(b);
+            self.call(2, 1);
+            Some(self.stack_pop())
+        } else {
+            None
+        }
     }
 
-    pub fn get_meta_field(&self, val: &LuaValue, field_name: &str) -> LuaValue {
-        if let Some(tbl) = self.get_meta_table(val) {
+    pub fn inline_get_meta_field(&self, val: &LuaValue, field_name: &str) -> LuaValue {
+        if let Some(tbl) = self.inline_get_meta_table(val) {
             tbl.get(&LuaValue::Str(format!("{}", field_name)))
         } else {
             LuaValue::Nil
         }
     }
 
-    pub fn get_meta_table(&self, val: &LuaValue) -> Option<Rc<LuaTable>> {
+    pub fn inline_get_meta_table(&self, val: &LuaValue) -> Option<Rc<LuaTable>> {
         if let LuaValue::Table(tbl) = val {
             let m_tbl = tbl.meta_table.borrow().clone();
             if let Some(m_tbl) = m_tbl {

@@ -1,5 +1,5 @@
 use neige_infra::{
-    state::AccessApi,
+    state::{AccessApi, CallApi},
     value::{closure::RustFn, value::LuaValue},
     LuaType,
 };
@@ -91,11 +91,11 @@ impl AccessApi for LuaState {
         self.stack_get(idx).convert_to_float()
     }
 
-    fn to_string(&self, idx: isize) -> String {
+    fn to_string(&mut self, idx: isize) -> String {
         self.to_string_x(idx).unwrap_or(format!(""))
     }
 
-    fn to_string_x(&self, idx: isize) -> Option<String> {
+    fn to_string_x(&mut self, idx: isize) -> Option<String> {
         let val = self.stack_get(idx);
         match val {
             LuaValue::Integer(i) => {
@@ -109,7 +109,17 @@ impl AccessApi for LuaState {
                 Some(s)
             }
             LuaValue::Str(s) => Some(s),
-            LuaValue::Table(_) => todo!(),
+            LuaValue::Table(_) => {
+                if let LuaValue::Function(c) = self.inline_get_meta_field(&val, "__tostring") {
+                    self.stack_push(LuaValue::Function(c));
+                    self.stack_push(val);
+                    self.call(1, 1);
+                    if let LuaValue::Str(s) = self.stack_get(-1) {
+                        return Some(s);
+                    }
+                }
+                None
+            }
             _ => None,
         }
     }
