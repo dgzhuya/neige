@@ -85,7 +85,7 @@ impl LuaState {
         self.pop_lua_stack();
         if n_results != 0 {
             let mut new_stack_mut = new_stack.borrow_mut();
-            let top = new_stack_mut.slots.len();
+            let top = new_stack_mut.top;
             let results = new_stack_mut.pop_n(top - n_regs);
             self.check_stack(results.len());
             self.stack_push_n(results, n_results)
