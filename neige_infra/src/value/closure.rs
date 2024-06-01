@@ -14,7 +14,6 @@ pub struct Closure {
     rdm: usize,
 }
 
-#[allow(dead_code)]
 impl Closure {
     pub fn new_fake_closure() -> Self {
         Self {
