@@ -47,7 +47,7 @@ impl StackApi for LuaState {
     }
 
     fn rotate(&mut self, idx: isize, n: isize) {
-        let t = self.get_top() as isize - 1;
+        let t = self.get_top() - 1;
         let p = self.abs_index(idx) - 1;
         let m = if n > 0 { t - n } else { p - n - 1 };
         self.stack_reverse(p, m);
