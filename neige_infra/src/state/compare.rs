@@ -4,6 +4,6 @@ use crate::constant::LuaCompare;
 ///
 /// 数量 `2`
 pub trait CompareApi {
-    fn compare(&self, idx1: isize, idx2: isize, op: LuaCompare) -> bool;
-    fn raw_equal(&self, idx1: isize, idx2: isize) -> bool;
+    fn compare(&mut self, idx1: isize, idx2: isize, op: LuaCompare) -> bool;
+    fn raw_equal(&mut self, idx1: isize, idx2: isize) -> bool;
 }
