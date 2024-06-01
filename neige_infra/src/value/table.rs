@@ -4,7 +4,7 @@ use crate::math::{float_to_integer, random};
 
 use super::value::LuaValue;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct LuaTable {
     rdm: usize,
     pub arr: RefCell<Vec<LuaValue>>,
