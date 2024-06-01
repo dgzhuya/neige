@@ -62,17 +62,25 @@ impl LuaState {
         let new_stack = LuaStack::new(n_regs + 20, &self.node, c);
         {
             let mut new_stack_mut = new_stack.borrow_mut();
-
             let mut func_and_arg = self.stack_pop_n((n_args as usize) + 1);
-
-            new_stack_mut.push_n(func_and_arg.split_off(1), n_params);
+            let mut param_or_arg = func_and_arg.split_off(1);
+            param_or_arg.reverse();
+            let len = param_or_arg.len();
+            let un = if n_params < 0 { len } else { n_params as usize };
+            for i in 0..un {
+                if i < len {
+                    new_stack_mut.push(param_or_arg.pop().unwrap());
+                } else {
+                    new_stack_mut.push(LuaValue::Nil)
+                }
+            }
             new_stack_mut.top = n_regs;
             if n_args > n_params && is_var_arg {
-                new_stack_mut.varargs = func_and_arg.split_off((n_params as usize) + 1)
+                param_or_arg.reverse();
+                new_stack_mut.varargs = param_or_arg
             }
         }
-        let new_stack_c = new_stack.clone();
-        self.push_lua_stack(new_stack_c);
+        self.push_lua_stack(new_stack.clone());
         self.run_lua_closure();
         self.pop_lua_stack();
         if n_results != 0 {
