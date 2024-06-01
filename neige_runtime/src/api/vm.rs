@@ -77,9 +77,14 @@ impl LuaVm for LuaState {
         self.stack_push_n(stack.varargs.clone(), n);
     }
 
+    /// ### 加载函数信息
+    /// - idx 加载到的位置
     fn load_proto(&mut self, idx: isize) {
+        // 获取栈信息
         let node = self.get_node();
         let mut stack = node.get_stack_mut();
+
+        // 获取当前栈中的字节码
         if let Some(proto) = &stack.closure.proto {
             let sub_proto = proto.protos[idx as usize].clone();
             let closure = Closure::new_lua_closure(sub_proto.clone());
@@ -89,7 +94,7 @@ impl LuaVm for LuaState {
                     if let Some(openuv) = stack.openuvs.get(&uv_idx) {
                         closure.upvals.borrow_mut()[i] = openuv.clone();
                     } else {
-                        let val = LuaUpval::new(self.stack_get(uv_idx));
+                        let val = LuaUpval::new(stack.get(uv_idx));
                         closure.upvals.borrow_mut()[i] = val.clone();
                         stack.openuvs.insert(uv_idx, val);
                     }
@@ -98,7 +103,7 @@ impl LuaVm for LuaState {
                         stack.closure.upvals.borrow()[uv_idx as usize].clone();
                 }
             }
-            self.stack_push(LuaValue::Function(Rc::new(closure)));
+            stack.push(LuaValue::Function(Rc::new(closure)));
         } else {
             panic!("proto is empty!!!")
         }
