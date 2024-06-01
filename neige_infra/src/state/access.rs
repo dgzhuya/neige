@@ -19,8 +19,8 @@ pub trait AccessApi {
     fn to_integer_x(&self, idx: isize) -> Option<i64>;
     fn to_number(&self, idx: isize) -> f64;
     fn to_number_x(&self, idx: isize) -> Option<f64>;
-    fn to_string(&self, idx: isize) -> String;
-    fn to_string_x(&self, idx: isize) -> Option<String>;
+    fn to_string(&mut self, idx: isize) -> String;
+    fn to_string_x(&mut self, idx: isize) -> Option<String>;
     fn to_rust_fn(&self, idx: isize) -> Option<RustFn>;
     fn raw_len(&self, idx: isize) -> usize;
 }
