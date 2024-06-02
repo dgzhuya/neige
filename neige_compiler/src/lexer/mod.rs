@@ -10,3 +10,14 @@ pub struct Lex {
     ahead: LuaToken,
     line: usize,
 }
+
+impl Lex {
+    pub fn new<R: Read + 'static>(input: R) -> Self {
+        let input: Box<dyn Read> = Box::new(input);
+        Self {
+            input: input.bytes().peekable(),
+            ahead: LuaToken::Eos,
+            line: 0,
+        }
+    }
+}
