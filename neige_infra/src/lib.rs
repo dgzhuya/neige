@@ -7,7 +7,7 @@ mod tools;
 pub mod value;
 
 pub use constant::{
-    LuaArith, LuaCompare, LuaType, LUAI_MAXSTACK, LUA_MINSTACK, LUA_REGISTRY_INDEX,
+    LuaArith, LuaCompare, LuaToken, LuaType, LUAI_MAXSTACK, LUA_MINSTACK, LUA_REGISTRY_INDEX,
     LUA_RIDX_GLOBALS,
 };
 pub use proto::proto::{Constant, LocVar, Prototype, Upvalue};
