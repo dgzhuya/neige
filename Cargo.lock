@@ -13,6 +13,7 @@ name = "neige_compiler"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "neige_infra",
 ]
 
 [[package]]
