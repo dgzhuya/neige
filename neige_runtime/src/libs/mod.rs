@@ -1,3 +1,5 @@
+mod pairs;
+
 use neige_infra::state::{LuaApi, PushApi};
 
 use crate::state::LuaState;
@@ -49,6 +51,9 @@ impl LuaState {
         self.register("print", lua_print);
         self.register("getmetatable", get_meta_table);
         self.register("setmetatable", set_meta_table);
+        self.register("next", pairs::next);
+        self.register("pairs", pairs::pairs);
+        self.register("ipairs", pairs::ipairs);
         self.register("error", error);
         self.register("pcall", pcall);
         self.register("print", lua_print);
