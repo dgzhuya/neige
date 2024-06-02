@@ -14,7 +14,7 @@ mod tests {
 
     #[test]
     fn test_lua_state() {
-        let file = read_file("data/test.out").unwrap();
+        let file = read_file("example/test.out").unwrap();
         let data = BufReader::new(file);
         let mut state = LuaState::new();
         state.aux_lib();
