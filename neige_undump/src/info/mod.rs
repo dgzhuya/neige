@@ -1,8 +1,4 @@
-mod op;
-
-use neige_infra::{code::inst_mode::OpMode, Prototype};
-
-use crate::info::op::{OpArgMode, OpName};
+use neige_infra::{code::inst::Instruction, Constant, Prototype};
 
 pub trait ProtoPrint {
     fn list_proto(&self);
@@ -58,8 +54,8 @@ impl ProtoPrint for Prototype {
             } else {
                 "-".to_string()
             };
-            print!("\t{}\t[{}]\t{}\t", i + 1, line, code.get_op_name());
-            print_oprands(*code);
+            print!("\t{}\t[{}]\t", i + 1, line);
+            print_oprands(code, &self.constants);
             println!()
         }
     }
@@ -91,37 +87,148 @@ impl ProtoPrint for Prototype {
     }
 }
 
-fn print_oprands(op: u32) {
-    let op_mode: OpMode = op.into();
-    match op_mode {
-        OpMode::IABC(a, b, c) => {
-            print!("{}", a);
-            if op.get_op_b_mode() != OpArgMode::ArgN {
-                let b = if b > 0xff {
-                    -1 - ((b as i32) & 0xff)
-                } else {
-                    b.into()
-                };
-                print!(" {}", b);
-            }
-            if op.get_op_c_mode() != OpArgMode::ArgN {
-                let c = if c > 0xff {
-                    -1 - ((c as i32) & 0xff)
-                } else {
-                    c.into()
-                };
-                print!(" {}", c);
-            }
+fn print_oprands(op: &Instruction, consts: &Vec<Constant>) {
+    match op {
+        Instruction::Move(a, b, c) => {
+            println!("MOVE     {}\t{}\t{}\t", a, b, c);
         }
-        OpMode::IABx(a, bx) => {
-            print!("{}", a);
-            match op.get_op_b_mode() {
-                OpArgMode::ArgU => print!(" {}", -1 - (bx as i32)),
-                OpArgMode::ArgK => print!(" {}", bx),
-                _ => {}
-            }
+        Instruction::LoadK(_, _) => {
+            println!("LoadK    ");
         }
-        OpMode::IAsBx(a, s_bx) => print!("{} {}", a, s_bx),
-        OpMode::IAx(ax) => print!(" {}", -1 - (ax as i32)),
+        Instruction::LoadKx(_, _) => {
+            println!("LoadKx   ");
+        }
+        Instruction::LoadBool(_, _, _) => {
+            println!("LoadBool ");
+        }
+        Instruction::LoadNil(_, _, _) => {
+            println!("LoadNil  ");
+        }
+        Instruction::GetUpVal(_, _, _) => {
+            println!("GetUpVal ");
+        }
+        Instruction::GetTabUp(_, _, _) => {
+            println!("GetTabUp ");
+        }
+        Instruction::GetTable(_, _, _) => {
+            println!("GetTable ");
+        }
+        Instruction::SetTabUp(_, _, _) => {
+            println!("SetTabUp ");
+        }
+        Instruction::SetUpVal(_, _, _) => {
+            println!("SetUpVal ");
+        }
+        Instruction::SetTable(_, _, _) => {
+            println!("SetTable ");
+        }
+        Instruction::NetTable(_, _, _) => {
+            println!("NetTable ");
+        }
+        Instruction::_Self(_, _, _) => {
+            println!("Self     ");
+        }
+        Instruction::Add(_, _, _) => {
+            println!("Add      ");
+        }
+        Instruction::Sub(_, _, _) => {
+            println!("Sub      ");
+        }
+        Instruction::Mul(_, _, _) => {
+            println!("Mul      ");
+        }
+        Instruction::Mod(_, _, _) => {
+            println!("Mod      ");
+        }
+        Instruction::Pow(_, _, _) => {
+            println!("Pow      ");
+        }
+        Instruction::Div(_, _, _) => {
+            println!("Div      ");
+        }
+        Instruction::IDiv(_, _, _) => {
+            println!("IDiv    ");
+        }
+        Instruction::BAnd(_, _, _) => {
+            println!("BAnd     ");
+        }
+        Instruction::Bor(_, _, _) => {
+            println!("Bor      ");
+        }
+        Instruction::BXor(_, _, _) => {
+            println!("BXor     ");
+        }
+        Instruction::Shl(_, _, _) => {
+            println!("Shl      ");
+        }
+        Instruction::Shr(_, _, _) => {
+            println!("Shr      ");
+        }
+        Instruction::Unm(_, _, _) => {
+            println!("Unm      ");
+        }
+        Instruction::BNot(_, _, _) => {
+            println!("BNot     ");
+        }
+        Instruction::Not(_, _, _) => {
+            println!("Not      ");
+        }
+        Instruction::Length(_, _, _) => {
+            println!("Length   ");
+        }
+        Instruction::Concat(_, _, _) => {
+            println!("Concat   ");
+        }
+        Instruction::Jmp(_, _) => {
+            println!("Jmp      ");
+        }
+        Instruction::Eq(_, _, _) => {
+            println!("Eq       ");
+        }
+        Instruction::Lt(_, _, _) => {
+            println!("Lt       ");
+        }
+        Instruction::Le(_, _, _) => {
+            println!("Le       ");
+        }
+        Instruction::Test(_, _, _) => {
+            println!("Test     ");
+        }
+        Instruction::TestSet(_, _, _) => {
+            println!("TestSet  ");
+        }
+        Instruction::Call(_, _, _) => {
+            println!("Call     ");
+        }
+        Instruction::TailCall(_, _, _) => {
+            println!("TailCall ");
+        }
+        Instruction::Return(_, _, _) => {
+            println!("Return   ");
+        }
+        Instruction::ForLoop(_, _) => {
+            println!("ForLoop  ");
+        }
+        Instruction::ForPrep(_, _) => {
+            println!("ForPrep  ");
+        }
+        Instruction::TForCall(_, _, _) => {
+            println!("TForCall ");
+        }
+        Instruction::TForLoop(_, _) => {
+            println!("TForLoop ");
+        }
+        Instruction::SetList(_, _, _) => {
+            println!("SetList  ");
+        }
+        Instruction::Closure(_, _) => {
+            println!("Closure  ");
+        }
+        Instruction::Vararg(_, _, _) => {
+            println!("Vararg   ");
+        }
+        Instruction::ExtraArg(_) => {
+            println!("ExtraArg ");
+        }
     }
 }

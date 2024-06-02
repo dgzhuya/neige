@@ -1,6 +1,6 @@
 use std::rc::Rc;
 
-use crate::value::value::LuaValue;
+use crate::{code::inst::Instruction, value::value::LuaValue};
 
 #[derive(Debug)]
 pub struct Prototype {
@@ -10,7 +10,7 @@ pub struct Prototype {
     pub num_params: u8,
     pub is_vararg: u8,
     pub max_stack_size: u8,
-    pub code: Vec<u32>,
+    pub code: Vec<Instruction>,
     pub constants: Vec<Constant>,
     pub upvalues: Vec<Upvalue>,
     pub protos: Vec<Rc<Prototype>>,

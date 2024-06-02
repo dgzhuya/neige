@@ -4,6 +4,7 @@ use super::{convert::DecodeOrder, inst_mode::OpMode};
 /// Kst(B) 从常量索引B加载数据
 /// Rk(B) 从变量或常量中加载数据，B>0x100则从常量中加载
 /// UpValue[B] 获取上值索引B中的数据
+#[derive(Debug, Clone, Copy)]
 pub enum Instruction {
     Move(u8, u16, u16),     // R(A) := R(B)
     LoadK(u8, u32),         // R(A) := Kst(Bx)

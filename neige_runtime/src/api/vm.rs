@@ -27,7 +27,7 @@ impl LuaVm for LuaState {
         if let Some(proto) = &stack.closure.proto {
             let i = proto.code[stack.pc as usize];
             stack.pc += 1;
-            i.into()
+            i
         } else {
             panic!("state overflow")
         }

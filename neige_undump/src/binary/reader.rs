@@ -114,7 +114,7 @@ impl Reader {
             num_params: self.read_byte(),
             is_vararg: self.read_byte(),
             max_stack_size: self.read_byte(),
-            code: self.read_vec(|r| r.read_u32()),
+            code: self.read_vec(|r| r.read_u32().into()),
             constants: self.read_vec(|r| r.read_constant()),
             upvalues: self.read_vec(|r| r.read_upvalue()),
             protos: self.read_vec(|r| r.read_proto(source.clone())),
