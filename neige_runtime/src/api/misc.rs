@@ -30,8 +30,8 @@ impl MiscApi for LuaState {
         } else if n >= 2 {
             for _ in 1..n {
                 if self.is_string(-1) && self.is_string(-2) {
-                    let s1 = self.to_string(-1);
-                    let s2 = self.to_string(-2);
+                    let s2 = self.to_string(-1);
+                    let s1 = self.to_string(-2);
                     self.stack_pop();
                     self.stack_pop();
                     self.stack_push(LuaValue::Str(format!("{}{}", s1, s2)));
