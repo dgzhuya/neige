@@ -1,4 +1,4 @@
-use neige_infra::{code::inst::Instruction, Constant, Prototype};
+use neige_infra::{code::inst::Instruction, Prototype};
 
 pub trait ProtoPrint {
     fn list_proto(&self);
@@ -55,17 +55,16 @@ impl ProtoPrint for Prototype {
                 "-".to_string()
             };
             print!("\t{}\t[{}]\t", i + 1, line);
-            print_oprands(code, &self.constants);
-            println!()
+            print_oprands(code);
         }
     }
 
     fn print_detail(&self) {
-        println!("constants ({}):", self.constants.len());
+        println!("constants  ({}):", self.constants.len());
         for (i, k) in self.constants.iter().enumerate() {
             println!("\t{}\t{}", i + 1, k.to_string())
         }
-        println!("locals ({}):", self.loc_vars.len());
+        println!("locals  ({}):", self.loc_vars.len());
         for (i, v) in self.loc_vars.iter().enumerate() {
             println!(
                 "\t{}\t{}\t{}\t{}",
@@ -75,7 +74,7 @@ impl ProtoPrint for Prototype {
                 v.end_pc + 1
             )
         }
-        println!("upvalues ({}):", self.upvalues.len());
+        println!("upvalues  ({}):", self.upvalues.len());
         for (i, u) in self.upvalues.iter().enumerate() {
             let name = if self.upvalue_names.len() > 0 {
                 self.upvalue_names[i].clone()
@@ -87,148 +86,162 @@ impl ProtoPrint for Prototype {
     }
 }
 
-fn print_oprands(op: &Instruction, consts: &Vec<Constant>) {
+fn print_oprands(op: &Instruction) {
+    let op_arg = |n: &u16| {
+        if *n > 0xff {
+            format!("{}", -1 - ((*n & 0xff) as isize))
+        } else {
+            format!(" {}", *n as isize)
+        }
+    };
+    let op_arg_sbx = |n: &i32| {
+        if *n < 0 {
+            format!("{}", n)
+        } else {
+            format!(" {}", n)
+        }
+    };
     match op {
         Instruction::Move(a, b, c) => {
-            println!("MOVE     {}\t{}\t{}\t", a, b, c);
+            println!("MOVE      {}  {}  {}", a, b, c);
         }
-        Instruction::LoadK(_, _) => {
-            println!("LoadK    ");
+        Instruction::LoadK(a, bx) => {
+            println!("LOADK     {}  {}", a, -1 - (*bx as isize));
         }
-        Instruction::LoadKx(_, _) => {
-            println!("LoadKx   ");
+        Instruction::LoadKx(a, _) => {
+            println!("LOADKX    {}", a);
         }
-        Instruction::LoadBool(_, _, _) => {
-            println!("LoadBool ");
+        Instruction::LoadBool(a, b, c) => {
+            println!("LOADBOOL  {}  {}  {}", a, op_arg(b), op_arg(c));
         }
-        Instruction::LoadNil(_, _, _) => {
-            println!("LoadNil  ");
+        Instruction::LoadNil(a, b, _) => {
+            println!("LOADNIL   {}  {}", a, op_arg(b));
         }
-        Instruction::GetUpVal(_, _, _) => {
-            println!("GetUpVal ");
+        Instruction::GetUpVal(a, b, _) => {
+            println!("GETUPVAL  {}  {}", a, op_arg(b));
         }
-        Instruction::GetTabUp(_, _, _) => {
-            println!("GetTabUp ");
+        Instruction::GetTabUp(a, b, c) => {
+            println!("GETTABUP  {}  {}  {}", a, op_arg(b), op_arg(c));
         }
-        Instruction::GetTable(_, _, _) => {
-            println!("GetTable ");
+        Instruction::GetTable(a, b, c) => {
+            println!("GETTABLE  {}  {}  {}", a, op_arg(b), op_arg(c));
         }
-        Instruction::SetTabUp(_, _, _) => {
-            println!("SetTabUp ");
+        Instruction::SetTabUp(a, b, c) => {
+            println!("SETTABUP  {}  {}  {}", a, op_arg(b), op_arg(c));
         }
-        Instruction::SetUpVal(_, _, _) => {
-            println!("SetUpVal ");
+        Instruction::SetUpVal(a, b, _) => {
+            println!("SETUPVAL  {}  {}", a, op_arg(b));
         }
-        Instruction::SetTable(_, _, _) => {
-            println!("SetTable ");
+        Instruction::SetTable(a, b, c) => {
+            println!("SETTABLE  {}  {}  {}", a, op_arg(b), op_arg(c));
         }
-        Instruction::NetTable(_, _, _) => {
-            println!("NetTable ");
+        Instruction::NetTable(a, b, c) => {
+            println!("NETTABLE  {}  {}  {}", a, op_arg(b), op_arg(c));
         }
-        Instruction::_Self(_, _, _) => {
-            println!("Self     ");
+        Instruction::_Self(a, b, c) => {
+            println!("SELF      {}  {}  {}", a, op_arg(b), op_arg(c));
         }
-        Instruction::Add(_, _, _) => {
-            println!("Add      ");
+        Instruction::Add(a, b, c) => {
+            println!("ADD       {}  {}  {}", a, op_arg(b), op_arg(c));
         }
-        Instruction::Sub(_, _, _) => {
-            println!("Sub      ");
+        Instruction::Sub(a, b, c) => {
+            println!("SUB       {}  {}  {}", a, op_arg(b), op_arg(c));
         }
-        Instruction::Mul(_, _, _) => {
-            println!("Mul      ");
+        Instruction::Mul(a, b, c) => {
+            println!("MUL       {}  {}  {}", a, op_arg(b), op_arg(c));
         }
-        Instruction::Mod(_, _, _) => {
-            println!("Mod      ");
+        Instruction::Mod(a, b, c) => {
+            println!("MOD       {}  {}  {}", a, op_arg(b), op_arg(c));
         }
-        Instruction::Pow(_, _, _) => {
-            println!("Pow      ");
+        Instruction::Pow(a, b, c) => {
+            println!("POW       {}  {}  {}", a, op_arg(b), op_arg(c));
         }
-        Instruction::Div(_, _, _) => {
-            println!("Div      ");
+        Instruction::Div(a, b, c) => {
+            println!("DIV       {}  {}  {}", a, op_arg(b), op_arg(c));
         }
-        Instruction::IDiv(_, _, _) => {
-            println!("IDiv    ");
+        Instruction::IDiv(a, b, c) => {
+            println!("IDIV      {}  {}  {}", a, op_arg(b), op_arg(c));
         }
-        Instruction::BAnd(_, _, _) => {
-            println!("BAnd     ");
+        Instruction::BAnd(a, b, c) => {
+            println!("BAND      {}  {}  {}", a, op_arg(b), op_arg(c));
         }
-        Instruction::Bor(_, _, _) => {
-            println!("Bor      ");
+        Instruction::Bor(a, b, c) => {
+            println!("BOR       {}  {}  {}", a, op_arg(b), op_arg(c));
         }
-        Instruction::BXor(_, _, _) => {
-            println!("BXor     ");
+        Instruction::BXor(a, b, c) => {
+            println!("BXOR      {}  {}  {}", a, op_arg(b), op_arg(c));
         }
-        Instruction::Shl(_, _, _) => {
-            println!("Shl      ");
+        Instruction::Shl(a, b, c) => {
+            println!("SHL       {}  {}  {}", a, op_arg(b), op_arg(c));
         }
-        Instruction::Shr(_, _, _) => {
-            println!("Shr      ");
+        Instruction::Shr(a, b, c) => {
+            println!("SHR       {}  {}  {}", a, op_arg(b), op_arg(c));
         }
-        Instruction::Unm(_, _, _) => {
-            println!("Unm      ");
+        Instruction::Unm(a, b, _) => {
+            println!("UNM       {}  {}", a, op_arg(b));
         }
-        Instruction::BNot(_, _, _) => {
-            println!("BNot     ");
+        Instruction::BNot(a, b, _) => {
+            println!("BNOT      {}  {}", a, op_arg(b));
         }
-        Instruction::Not(_, _, _) => {
-            println!("Not      ");
+        Instruction::Not(a, b, _) => {
+            println!("NOT       {}  {}", a, op_arg(b));
         }
-        Instruction::Length(_, _, _) => {
-            println!("Length   ");
+        Instruction::Length(a, b, _) => {
+            println!("LENGTH    {}  {}", a, op_arg(b));
         }
-        Instruction::Concat(_, _, _) => {
-            println!("Concat   ");
+        Instruction::Concat(a, b, c) => {
+            println!("CONCAT    {}  {}  {}", a, op_arg(b), op_arg(c));
         }
-        Instruction::Jmp(_, _) => {
-            println!("Jmp      ");
+        Instruction::Jmp(a, sbx) => {
+            println!("JMP       {}  {}", a, op_arg_sbx(sbx));
         }
-        Instruction::Eq(_, _, _) => {
-            println!("Eq       ");
+        Instruction::Eq(a, b, c) => {
+            println!("EQ        {}  {}  {}", a, op_arg(b), op_arg(c));
         }
-        Instruction::Lt(_, _, _) => {
-            println!("Lt       ");
+        Instruction::Lt(a, b, c) => {
+            println!("LT        {}  {}  {}", a, op_arg(b), op_arg(c));
         }
-        Instruction::Le(_, _, _) => {
-            println!("Le       ");
+        Instruction::Le(a, b, c) => {
+            println!("LE        {}  {}  {}", a, op_arg(b), op_arg(c));
         }
-        Instruction::Test(_, _, _) => {
-            println!("Test     ");
+        Instruction::Test(a, _, c) => {
+            println!("TEST      {}  {}", a, op_arg(c));
         }
-        Instruction::TestSet(_, _, _) => {
-            println!("TestSet  ");
+        Instruction::TestSet(a, b, c) => {
+            println!("TESTSET   {}  {}  {}", a, op_arg(b), op_arg(c));
         }
-        Instruction::Call(_, _, _) => {
-            println!("Call     ");
+        Instruction::Call(a, b, c) => {
+            println!("CALL      {}  {}  {}", a, op_arg(b), op_arg(c));
         }
-        Instruction::TailCall(_, _, _) => {
-            println!("TailCall ");
+        Instruction::TailCall(a, b, _) => {
+            println!("TAILCALL  {}  {}", a, op_arg(b));
         }
-        Instruction::Return(_, _, _) => {
-            println!("Return   ");
+        Instruction::Return(a, b, _) => {
+            println!("RETURN    {}  {}", a, op_arg(b));
         }
-        Instruction::ForLoop(_, _) => {
-            println!("ForLoop  ");
+        Instruction::ForLoop(a, sbx) => {
+            println!("FORLOOP   {}  {}", a, op_arg_sbx(sbx));
         }
-        Instruction::ForPrep(_, _) => {
-            println!("ForPrep  ");
+        Instruction::ForPrep(a, sbx) => {
+            println!("FORPREP   {}  {}", a, op_arg_sbx(sbx));
         }
-        Instruction::TForCall(_, _, _) => {
-            println!("TForCall ");
+        Instruction::TForCall(a, _, c) => {
+            println!("TFORCALL  {}  {}", a, op_arg(c));
         }
-        Instruction::TForLoop(_, _) => {
-            println!("TForLoop ");
+        Instruction::TForLoop(a, sbx) => {
+            println!("TFORLOOP  {}  {}", a, op_arg_sbx(sbx));
         }
-        Instruction::SetList(_, _, _) => {
-            println!("SetList  ");
+        Instruction::SetList(a, b, c) => {
+            println!("SETLIST   {}  {}  {}", a, op_arg(b), op_arg(c));
         }
-        Instruction::Closure(_, _) => {
-            println!("Closure  ");
+        Instruction::Closure(a, bx) => {
+            println!("CLOSURE   {}   {}", a, bx);
         }
-        Instruction::Vararg(_, _, _) => {
-            println!("Vararg   ");
+        Instruction::Vararg(a, b, _) => {
+            println!("VARARG    {}  {}", a, op_arg(b));
         }
-        Instruction::ExtraArg(_) => {
-            println!("ExtraArg ");
+        Instruction::ExtraArg(ax) => {
+            println!("EXTRAARG  {}", -1 - (*ax as isize));
         }
     }
 }
