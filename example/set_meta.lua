@@ -25,7 +25,7 @@ mt.__tostring = function(x)
 end
 
 function NewComplex(a, b)
-    t = { a = a, b = b }
+    local t = { a = a, b = b }
     setmetatable(t, mt)
     return t
 end

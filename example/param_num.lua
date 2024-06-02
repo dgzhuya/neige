@@ -1,15 +1,15 @@
-function f0() end
+function F0() end
 
-function f1(a) end
+function F1(a) end
 
-function f2(a, b) end
+function F2(a, b) end
 
-function f3(a, b, c) end
+function F3(a, b, c) end
 
-function g0(...) end
+function G0(...) end
 
-function g1(a, ...) end
+function G1(a, ...) end
 
-function g2(a, b, ...) end
+function G2(a, b, ...) end
 
-function g3(a, b, c, ...) end
+function G3(a, b, c, ...) end
