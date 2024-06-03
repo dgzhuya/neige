@@ -3,3 +3,4 @@
 *.out
 pkg/
 build/
+node_modules/

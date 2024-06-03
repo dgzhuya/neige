@@ -6,7 +6,7 @@ use neige_infra::{
 use neige_runtime::state::LuaState;
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
-#[wasm_bindgen(module = "/js/lib.ts")]
+#[wasm_bindgen(module = "/ts/lib.ts")]
 extern "C" {
     pub fn genFontCode(name: &str, val: &JsValue);
     pub fn log(info: &str);
