@@ -8,17 +8,22 @@ use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
 #[wasm_bindgen(module = "/js/lib.ts")]
 extern "C" {
-    pub fn genFontCode(val: &JsValue);
+    pub fn genFontCode(name: &str, val: &JsValue);
     pub fn log(info: &str);
 }
 
 fn gen_font_code(ls: &mut dyn LuaApi) -> usize {
-    let info = ls.to_lua_tbl(-1);
-    if let Some(info) = info {
+    let info = ls.to_string(-2);
+    let route = if let Some(info) = ls.to_lua_tbl(-1) {
         if let Ok(val) = JsValue::from_serde(&LuaValue::Table(info)) {
-            genFontCode(&val);
+            val
+        } else {
+            JsValue::null()
         }
-    }
+    } else {
+        JsValue::null()
+    };
+    genFontCode(&info, &route);
     0
 }
 
