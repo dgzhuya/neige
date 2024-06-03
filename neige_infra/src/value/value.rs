@@ -1,5 +1,7 @@
 use std::{fmt::Debug, hash::Hash, rc::Rc};
 
+use serde::{ser::SerializeMap, Serialize};
+
 use crate::{math::float_to_integer, proto::proto::Prototype, LuaType};
 
 use super::{
@@ -140,6 +142,38 @@ impl Hash for LuaValue {
             LuaValue::Str(s) => s.hash(state),
             LuaValue::Table(t) => t.as_ref().hash(state),
             LuaValue::Function(f) => f.as_ref().hash(state),
+        }
+    }
+}
+
+impl Serialize for LuaValue {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        match self {
+            LuaValue::Nil => serializer.serialize_unit(),
+            LuaValue::Boolean(b) => serializer.serialize_bool(*b),
+            LuaValue::Integer(i) => serializer.serialize_i64(*i),
+            LuaValue::Number(f) => serializer.serialize_f64(*f),
+            LuaValue::Str(s) => serializer.serialize_str(s),
+            LuaValue::Function(_) => panic!("function can not serialize"),
+            LuaValue::Table(table) => {
+                let map = table.map.borrow();
+                if map.len() == 0 {
+                    table.arr.borrow().serialize(serializer)
+                } else {
+                    let arr = table.arr.borrow();
+                    let mut obj = serializer.serialize_map(Some(map.len() + arr.len()))?;
+                    for (i, val) in arr.iter().enumerate() {
+                        obj.serialize_entry(&(i + 1).to_string(), val)?;
+                    }
+                    for (k, val) in map.iter() {
+                        obj.serialize_entry(k, val)?;
+                    }
+                    obj.end()
+                }
+            }
         }
     }
 }
