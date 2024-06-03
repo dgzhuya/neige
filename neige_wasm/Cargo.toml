@@ -13,7 +13,7 @@ crate-type = ["cdylib"]
 serde = { version = "1.0.203", features = ["derive"] }
 gloo-utils = "0.2.0"
 js-sys = "0.3.69"
-neige_runtime = { workspace = true }
-neige_infra = { workspace = true }
+neige_runtime = { workspace = true, features = ["wasm"] }
+neige_infra = { workspace = true, features = ["wasm"] }
 serde-wasm-bindgen = "0.6.5"
 wasm-bindgen = "0.2.92"

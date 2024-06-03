@@ -4,6 +4,7 @@ pub mod state;
 mod vm;
 
 #[cfg(test)]
+#[cfg(not(feature = "wasm"))]
 mod tests {
 
     use std::io::BufReader;

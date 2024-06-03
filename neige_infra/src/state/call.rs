@@ -1,3 +1,4 @@
+#[cfg(not(feature = "wasm"))]
 use std::{fs::File, io::BufReader};
 
 /// 函数调用trait

@@ -4,6 +4,7 @@ mod info;
 pub use binary::undump;
 
 #[cfg(test)]
+#[cfg(not(feature = "wasm"))]
 mod tests {
     use std::io::BufReader;
 

@@ -1,3 +1,6 @@
+#[cfg(feature = "wasm")]
+use std::rc::Rc;
+#[cfg(not(feature = "wasm"))]
 use std::{
     fs::File,
     io::{BufReader, Read},

@@ -1,3 +1,6 @@
+#[cfg(feature = "wasm")]
+use std::rc::Rc;
+#[cfg(not(feature = "wasm"))]
 use std::{fs::File, io::BufReader, rc::Rc};
 
 use neige_infra::{
@@ -11,8 +14,22 @@ use neige_undump::undump;
 use crate::state::{LuaStack, LuaState};
 
 impl CallApi for LuaState {
+    #[cfg(not(feature = "wasm"))]
     fn load(&mut self, chunk: BufReader<File>, chunk_name: &str, _mode: &str) {
-        // println!("{}", mode);
+        let proto = undump(chunk, chunk_name);
+        let proto_len = proto.upvalues.len();
+        let env = self.registry_get(&LuaValue::Integer(LUA_RIDX_GLOBALS));
+        let c = LuaValue::new_lua_closure(proto);
+        if proto_len > 0 {
+            if let LuaValue::Function(c) = &c {
+                c.upvals.borrow_mut()[0].set_val(env)
+            }
+        }
+        self.stack_push(c);
+    }
+
+    #[cfg(feature = "wasm")]
+    fn load(&mut self, chunk: Vec<u8>, chunk_name: &str, _mode: &str) {
         let proto = undump(chunk, chunk_name);
         let proto_len = proto.upvalues.len();
         let env = self.registry_get(&LuaValue::Integer(LUA_RIDX_GLOBALS));
