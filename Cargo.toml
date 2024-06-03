@@ -1,7 +1,14 @@
 [workspace]
-members = ["neige_compiler", "neige_infra", "neige_undump", "neige_runtime"]
+members = [
+    "neige_compiler",
+    "neige_infra",
+    "neige_undump",
+    "neige_runtime",
+    "neige_wasm",
+]
 resolver = "2"
 [workspace.dependencies]
 anyhow = "1.0.82"
 neige_infra = { version = "0.1.0", path = "./neige_infra" }
 neige_undump = { version = "0.1.0", path = "./neige_undump" }
+neige_runtime = { version = "0.1.0", path = "./neige_runtime" }
