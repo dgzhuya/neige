@@ -1,6 +1,8 @@
+use std::rc::Rc;
+
 use neige_infra::{
     state::{AccessApi, CallApi},
-    value::{closure::RustFn, value::LuaValue},
+    value::{closure::RustFn, table::LuaTable, value::LuaValue},
     LuaType,
 };
 
@@ -71,6 +73,10 @@ impl AccessApi for LuaState {
         return false;
     }
 
+    fn is_lua_tbl(&self, idx: isize) -> bool {
+        self.ty_id(idx) == LuaType::Table
+    }
+
     fn to_boolean(&self, idx: isize) -> bool {
         self.stack_get(idx).convert_to_boolean()
     }
@@ -132,6 +138,15 @@ impl AccessApi for LuaState {
             }
         }
         None
+    }
+
+    fn to_lua_tbl(&self, idx: isize) -> Option<Rc<LuaTable>> {
+        let val = self.stack_get(idx);
+        if let LuaValue::Table(tbl) = val {
+            Some(tbl)
+        } else {
+            None
+        }
     }
 
     fn raw_len(&self, idx: isize) -> usize {
