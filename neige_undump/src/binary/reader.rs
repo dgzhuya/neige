@@ -6,19 +6,40 @@ use std::{
 
 use neige_infra::{Constant, LocVar, Prototype, Upvalue};
 
+#[cfg(not(feature = "wasm"))]
 pub struct Reader {
     data: BufReader<File>,
 }
 
+#[cfg(feature = "wasm")]
+pub struct Reader {
+    data: Vec<u8>,
+    pos: usize,
+}
+
 impl Reader {
+    #[cfg(not(feature = "wasm"))]
     pub fn new(data: BufReader<File>) -> Self {
         Self { data }
     }
 
+    #[cfg(feature = "wasm")]
+    pub fn new(data: Vec<u8>) -> Self {
+        Self { data, pos: 0 }
+    }
+
+    #[cfg(not(feature = "wasm"))]
     pub fn read_byte(&mut self) -> u8 {
         let mut b = [0u8; 1];
         self.data.read(&mut b).unwrap();
         b[0]
+    }
+
+    #[cfg(feature = "wasm")]
+    pub fn read_byte(&mut self) -> u8 {
+        let b = self.data[self.pos];
+        self.pos += 1;
+        b
     }
 
     fn read_bytes(&mut self, n: usize) -> Vec<u8> {
