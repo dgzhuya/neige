@@ -9,7 +9,7 @@ use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 #[wasm_bindgen(module = "/ts/lib.ts")]
 extern "C" {
     pub fn genFontCode(name: &str, val: &JsValue);
-    pub fn log(info: &str);
+    pub fn logger(info: &str);
 }
 
 fn gen_font_code(ls: &mut dyn LuaApi) -> usize {
@@ -29,9 +29,11 @@ fn gen_font_code(ls: &mut dyn LuaApi) -> usize {
 
 #[wasm_bindgen]
 pub fn run(data: &[u8], file_name: &str) {
+    logger("start");
     let mut state = LuaState::new();
     state.aux_lib();
     state.register("genFontCode", gen_font_code);
     state.load(data.to_vec(), file_name, "bt");
-    state.call(0, 0)
+    state.call(0, 0);
+    logger("end")
 }
