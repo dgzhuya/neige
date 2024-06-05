@@ -32,7 +32,9 @@ impl LuaState {
     pub(super) fn fix_stack(&mut self, a: isize) {
         let x = self.to_integer(-1) as isize;
         self.pop(1);
-        self.check_stack(x as usize - a as usize);
+        if x > a {
+            self.check_stack((x - a) as usize);
+        }
         for i in a..x {
             self.push_value(i)
         }
