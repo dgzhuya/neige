@@ -19,7 +19,7 @@ impl StackApi for LuaState {
     }
 
     fn pop(&mut self, n: isize) {
-        self.set_top(n - 1)
+        self.set_top(-n - 1)
     }
 
     fn copy(&mut self, from_idx: isize, to_idx: isize) {
