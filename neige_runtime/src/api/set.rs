@@ -14,10 +14,10 @@ impl SetApi for LuaState {
         self.inline_set_table(t, k, v, false)
     }
 
-    fn set_field(&mut self, idx: isize, key: String) {
+    fn set_field(&mut self, idx: isize, key: &str) {
         let t = self.stack_get(idx);
         let v = self.stack_pop();
-        self.inline_set_table(t, LuaValue::Str(key), v, false)
+        self.inline_set_table(t, LuaValue::Str(key.into()), v, false)
     }
 
     fn set_i(&mut self, idx: isize, i: i64) {
@@ -49,15 +49,15 @@ impl SetApi for LuaState {
         self.inline_set_table(t, LuaValue::Integer(i), v, true);
     }
 
-    fn set_global(&mut self, name: String) {
+    fn set_global(&mut self, name: &str) {
         let t = self.registry_get(&LuaValue::Integer(LUA_RIDX_GLOBALS));
         let v = self.stack_pop();
-        self.inline_set_table(t, LuaValue::Str(name), v, false)
+        self.inline_set_table(t, LuaValue::Str(name.into()), v, false)
     }
 }
 
 impl LuaState {
-    pub fn inline_set_table(&mut self, t: LuaValue, k: LuaValue, v: LuaValue, raw: bool) {
+    fn inline_set_table(&mut self, t: LuaValue, k: LuaValue, v: LuaValue, raw: bool) {
         if let LuaValue::Table(tbl) = &t {
             if raw || !tbl.get(&k).is_nil() || !tbl.has_meta_field("__newindex") {
                 tbl.put(k, v);

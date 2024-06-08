@@ -18,7 +18,7 @@ impl LuaState {
         Self { node }
     }
 
-    pub fn pop_lua_stack(&self) {
+    pub(crate) fn pop_lua_stack(&self) {
         let mut node = self.get_node_mut();
         if let Some(stack) = &node.stack.clone() {
             node.stack = stack.borrow().prev.clone();
@@ -26,7 +26,7 @@ impl LuaState {
         }
     }
 
-    pub fn push_lua_stack(&self, lua_stack: Rc<RefCell<LuaStack>>) {
+    pub(crate) fn push_lua_stack(&self, lua_stack: Rc<RefCell<LuaStack>>) {
         let mut node = self.get_node_mut();
         if let Some(prev_stack) = &node.stack {
             lua_stack.borrow_mut().prev = Some(prev_stack.clone())
@@ -34,23 +34,23 @@ impl LuaState {
         node.stack = Some(lua_stack);
     }
 
-    pub fn get_node(&self) -> Ref<LuaNode> {
+    pub(crate) fn get_node(&self) -> Ref<LuaNode> {
         self.node.borrow()
     }
 
     /// 获取node信息
     /// ### 返回值
     /// * `RefMut<LuaNode>` lua node的引用
-    pub fn get_node_mut(&self) -> RefMut<LuaNode> {
+    pub(crate) fn get_node_mut(&self) -> RefMut<LuaNode> {
         self.node.borrow_mut()
     }
 
-    pub fn registry_get(&self, key: &LuaValue) -> LuaValue {
+    pub(crate) fn registry_get(&self, key: &LuaValue) -> LuaValue {
         let node = self.get_node();
         node.registry.get(key)
     }
 
-    pub fn registry_set(&self, key: LuaValue, val: LuaValue) {
+    pub(crate) fn registry_set(&self, key: LuaValue, val: LuaValue) {
         let node = self.get_node();
         node.registry.put(key, val)
     }

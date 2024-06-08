@@ -8,7 +8,7 @@ use neige_infra::{
 use super::LuaState;
 
 impl LuaState {
-    pub fn call_meta_method(
+    pub(crate) fn call_meta_method(
         &mut self,
         a: LuaValue,
         b: LuaValue,
@@ -33,7 +33,7 @@ impl LuaState {
         }
     }
 
-    pub fn inline_get_meta_field(&self, val: &LuaValue, field_name: &str) -> LuaValue {
+    pub(crate) fn inline_get_meta_field(&self, val: &LuaValue, field_name: &str) -> LuaValue {
         if let Some(tbl) = self.inline_get_meta_table(val) {
             tbl.get(&LuaValue::Str(format!("{}", field_name)))
         } else {
@@ -41,7 +41,7 @@ impl LuaState {
         }
     }
 
-    pub fn inline_get_meta_table(&self, val: &LuaValue) -> Option<Rc<LuaTable>> {
+    pub(crate) fn inline_get_meta_table(&self, val: &LuaValue) -> Option<Rc<LuaTable>> {
         if let LuaValue::Table(tbl) = val {
             let m_tbl = tbl.meta_table.borrow().clone();
             if let Some(m_tbl) = m_tbl {
@@ -58,7 +58,7 @@ impl LuaState {
         None
     }
 
-    pub fn inline_set_meta_table(&self, val: &LuaValue, mt: Option<Rc<LuaTable>>) {
+    pub(crate) fn inline_set_meta_table(&self, val: &LuaValue, mt: Option<Rc<LuaTable>>) {
         if let LuaValue::Table(tbl) = val {
             let mut m_tb = tbl.meta_table.borrow_mut();
             if let Some(mt) = mt {
