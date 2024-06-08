@@ -23,8 +23,8 @@ impl PushApi for LuaState {
         self.stack_push(LuaValue::Number(f))
     }
 
-    fn push_string(&mut self, s: String) {
-        self.stack_push(LuaValue::Str(s))
+    fn push_string(&mut self, s: &str) {
+        self.stack_push(LuaValue::Str(s.into()))
     }
 
     fn push_rust_fn(&mut self, f: RustFn) {
@@ -41,15 +41,14 @@ impl PushApi for LuaState {
         self.stack_push(global)
     }
 
-    fn push_rust_closure(&mut self, f: RustFn, n: usize) {
+    fn push_rust_closure(&mut self, f: RustFn, mut n: usize) {
         let closure = LuaValue::new_rust_closure(f, n);
-        let mut i = n;
-        while i > 0 {
+        while n > 0 {
             let val = self.stack_pop();
             if let LuaValue::Function(c) = &closure {
-                c.upvals.borrow_mut()[i - 1].set_val(val);
+                c.upvals.borrow_mut()[n - 1].set_val(val);
             }
-            i -= 1
+            n -= 1
         }
         self.stack_push(closure)
     }
