@@ -1,10 +1,23 @@
-use neige_infra::{
-    state::{PushApi, SetApi},
+use neige_infra::LUA_RIDX_GLOBALS;
+
+use crate::{
+    state::LuaState,
     value::{closure::RustFn, value::LuaValue},
-    LUA_RIDX_GLOBALS,
 };
 
-use crate::state::LuaState;
+use super::SetApi;
+
+pub trait PushApi {
+    fn push_nil(&mut self);
+    fn push_boolean(&mut self, b: bool);
+    fn push_integer(&mut self, i: i64);
+    fn push_number(&mut self, f: f64);
+    fn push_string(&mut self, s: &str);
+    fn push_rust_fn(&mut self, f: RustFn);
+    fn register(&mut self, name: &str, f: RustFn);
+    fn push_global_table(&mut self);
+    fn push_rust_closure(&mut self, f: RustFn, n: usize);
+}
 
 impl PushApi for LuaState {
     fn push_nil(&mut self) {
@@ -33,7 +46,7 @@ impl PushApi for LuaState {
 
     fn register(&mut self, name: &str, f: RustFn) {
         self.push_rust_fn(f);
-        self.set_global(name.into());
+        self.set_global(name);
     }
 
     fn push_global_table(&mut self) {

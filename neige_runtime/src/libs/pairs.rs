@@ -1,4 +1,6 @@
-use neige_infra::{state::LuaApi, LuaType};
+use neige_infra::LuaType;
+
+use crate::api::LuaApi;
 
 pub(super) fn next(ls: &mut dyn LuaApi) -> usize {
     ls.set_top(2);

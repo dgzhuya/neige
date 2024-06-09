@@ -1,10 +1,16 @@
-use neige_infra::{
-    state::{CallApi, SetApi},
-    value::value::LuaValue,
-    LUA_RIDX_GLOBALS,
-};
+use neige_infra::LUA_RIDX_GLOBALS;
 
-use crate::state::LuaState;
+use crate::{api::CallApi, state::LuaState, value::value::LuaValue};
+
+pub trait SetApi {
+    fn set_table(&mut self, idx: isize);
+    fn set_field(&mut self, idx: isize, key: &str);
+    fn set_i(&mut self, idx: isize, i: i64);
+    fn set_meta_table(&mut self, idx: isize);
+    fn raw_set(&mut self, idx: isize);
+    fn raw_set_i(&mut self, idx: isize, i: i64);
+    fn set_global(&mut self, name: &str);
+}
 
 impl SetApi for LuaState {
     fn set_table(&mut self, idx: isize) {

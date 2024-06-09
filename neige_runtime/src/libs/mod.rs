@@ -1,8 +1,9 @@
 mod pairs;
 
-use neige_infra::state::{LuaApi, PushApi};
-
-use crate::state::LuaState;
+use crate::{
+    api::{LuaApi, PushApi},
+    state::LuaState,
+};
 
 fn pcall(ls: &mut dyn LuaApi) -> usize {
     let n_args = ls.get_top() - 1;

@@ -1,20 +1,26 @@
 use std::rc::Rc;
 
-use neige_infra::{
-    code::inst::Instruction,
-    state::{LuaVm, StackApi},
+use neige_infra::code::inst::Instruction;
+
+use crate::{
+    state::LuaState,
     value::{closure::Closure, upval::LuaUpval, value::LuaValue},
 };
 
-use crate::state::LuaState;
+use super::{LuaApi, StackApi};
+
+pub trait LuaVm: LuaApi {
+    fn add_pc(&mut self, n: isize);
+    fn fetch(&self) -> Instruction;
+    fn get_const(&mut self, idx: isize);
+    fn get_rk(&mut self, rk: isize);
+    fn register_count(&self) -> u8;
+    fn load_vararg(&mut self, n: isize);
+    fn load_proto(&mut self, idx: isize);
+    fn close_upvalue(&mut self, a: isize);
+}
 
 impl LuaVm for LuaState {
-    fn pc(&self) -> isize {
-        let node = self.get_node();
-        let stack = node.get_stack();
-        stack.pc
-    }
-
     fn add_pc(&mut self, n: isize) {
         let node = self.get_node();
         let mut stack = node.get_stack_mut();
@@ -40,7 +46,7 @@ impl LuaVm for LuaState {
             &stack.closure.proto.clone()
         };
         if let Some(proto) = proto {
-            let val = proto.constants[idx as usize].to_value();
+            let val = LuaValue::from_const(&proto.constants[idx as usize]);
             self.stack_push(val)
         } else {
             panic!("state overflow")

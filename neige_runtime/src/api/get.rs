@@ -1,10 +1,18 @@
-use neige_infra::{
-    state::{CallApi, GetApi},
-    value::value::LuaValue,
-    LuaType, LUA_RIDX_GLOBALS,
-};
+use neige_infra::{LuaType, LUA_RIDX_GLOBALS};
 
-use crate::state::LuaState;
+use crate::{api::CallApi, state::LuaState, value::value::LuaValue};
+
+pub trait GetApi {
+    fn new_table(&mut self);
+    fn create_table(&mut self, n_arr: usize, n_rec: usize);
+    fn get_table(&mut self, idx: isize) -> LuaType;
+    fn get_field(&mut self, idx: isize, key: String) -> LuaType;
+    fn get_i(&mut self, idx: isize, i: i64) -> LuaType;
+    fn get_meta_table(&mut self, idx: isize) -> bool;
+    fn raw_get(&mut self, idx: isize) -> LuaType;
+    fn raw_get_i(&mut self, idx: isize, i: i64) -> LuaType;
+    fn get_global(&mut self, name: String) -> LuaType;
+}
 
 impl GetApi for LuaState {
     fn new_table(&mut self) {

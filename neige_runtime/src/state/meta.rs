@@ -1,7 +1,7 @@
 use std::rc::Rc;
 
-use neige_infra::{
-    state::CallApi,
+use crate::{
+    api::CallApi,
     value::{table::LuaTable, value::LuaValue},
 };
 

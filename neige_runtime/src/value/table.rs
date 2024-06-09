@@ -1,6 +1,6 @@
 use std::{cell::RefCell, collections::HashMap, hash::Hash, rc::Rc};
 
-use crate::math::{float_to_integer, random};
+use neige_infra::math::{float_to_integer, random};
 
 use super::value::LuaValue;
 

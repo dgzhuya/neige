@@ -1,3 +1,5 @@
+pub mod fpb;
+
 pub fn random() -> usize {
     let ptr = Box::into_raw(Box::new(123));
     ptr as usize

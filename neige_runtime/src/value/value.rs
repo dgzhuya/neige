@@ -1,8 +1,7 @@
 use std::{fmt::Debug, hash::Hash, rc::Rc};
 
+use neige_infra::{math::float_to_integer, Constant, LuaType, Prototype};
 use serde::{ser::SerializeMap, Serialize};
-
-use crate::{math::float_to_integer, proto::proto::Prototype, LuaType};
 
 use super::{
     closure::{Closure, RustFn},
@@ -54,6 +53,16 @@ impl LuaValue {
 }
 
 impl LuaValue {
+    pub fn from_const(val: &Constant) -> Self {
+        match val {
+            Constant::Nil => LuaValue::Nil,
+            Constant::Boolean(b) => LuaValue::Boolean(*b),
+            Constant::Number(n) => LuaValue::Number(*n),
+            Constant::Integer(i) => LuaValue::Integer(*i),
+            Constant::Str(s) => LuaValue::Str(s.clone()),
+        }
+    }
+
     pub fn convert_to_boolean(&self) -> bool {
         match self {
             LuaValue::Nil => false,

@@ -1,6 +1,8 @@
 use std::{cell::RefCell, hash::Hash, rc::Rc};
 
-use crate::{math::random, proto::proto::Prototype, state::LuaApi};
+use neige_infra::{math::random, Prototype};
+
+use crate::api::LuaApi;
 
 use super::upval::LuaUpval;
 

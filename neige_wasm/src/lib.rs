@@ -1,7 +1,6 @@
 mod node;
 
-use neige_infra::state::CallApi;
-use neige_runtime::state::LuaState;
+use neige_runtime::{api::CallApi, state::LuaState};
 use node::LuaNodeLib;
 use wasm_bindgen::prelude::wasm_bindgen;
 

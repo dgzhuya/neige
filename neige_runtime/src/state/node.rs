@@ -3,10 +3,9 @@ use std::{
     rc::Rc,
 };
 
-use neige_infra::{
-    value::{closure::Closure, table::LuaTable, value::LuaValue},
-    LUA_MINSTACK, LUA_RIDX_GLOBALS,
-};
+use neige_infra::{LUA_MINSTACK, LUA_RIDX_GLOBALS};
+
+use crate::value::{closure::Closure, table::LuaTable, value::LuaValue};
 
 use super::stack::LuaStack;
 

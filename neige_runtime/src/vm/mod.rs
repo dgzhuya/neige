@@ -2,17 +2,15 @@ mod arith;
 mod call;
 mod utils;
 
-use neige_infra::{
-    code::inst::Instruction,
-    state::{
-        AccessApi, ArithApi, CallApi, CompareApi, GetApi, LuaVm, MiscApi, PushApi, SetApi, StackApi,
-    },
-    value::fpb::fb_2_isize,
-    LuaArith, LuaCompare,
-};
+use neige_infra::{code::inst::Instruction, math::fpb::fb_2_isize, LuaArith, LuaCompare};
 use utils::{i32_isize, lua_upvalue_index, u16_isize, u32_isize, u8_isize};
 
-use crate::state::LuaState;
+use crate::{
+    api::{
+        AccessApi, ArithApi, CallApi, CompareApi, GetApi, LuaVm, MiscApi, PushApi, SetApi, StackApi,
+    },
+    state::LuaState,
+};
 
 impl LuaState {
     pub fn execute(&mut self, inst: &Instruction) {

@@ -2,9 +2,7 @@ pub mod code;
 mod constant;
 pub mod math;
 mod proto;
-pub mod state;
 mod tools;
-pub mod value;
 
 pub use constant::{
     LuaArith, LuaCompare, LuaToken, LuaType, LUAI_MAXSTACK, LUA_MINSTACK, LUA_REGISTRY_INDEX,

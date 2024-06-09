@@ -1,8 +1,13 @@
 use std::rc::Rc;
 
-use neige_infra::{state::CompareApi, value::value::LuaValue, LuaCompare};
+use neige_infra::LuaCompare;
 
-use crate::state::LuaState;
+use crate::{state::LuaState, value::value::LuaValue};
+
+pub trait CompareApi {
+    fn compare(&mut self, idx1: isize, idx2: isize, op: LuaCompare) -> bool;
+    fn raw_equal(&mut self, idx1: isize, idx2: isize) -> bool;
+}
 
 impl CompareApi for LuaState {
     fn compare(&mut self, idx1: isize, idx2: isize, op: LuaCompare) -> bool {

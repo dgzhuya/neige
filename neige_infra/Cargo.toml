@@ -9,4 +9,3 @@ wasm = []
 
 [dependencies]
 anyhow = { workspace = true }
-serde = { version = "1.0.203", features = ["derive"] }

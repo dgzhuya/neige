@@ -1,9 +1,9 @@
-use neige_infra::{
-    state::{ArithApi, CompareApi, LuaVm, StackApi},
-    LuaArith, LuaCompare,
-};
+use neige_infra::{LuaArith, LuaCompare};
 
-use crate::state::LuaState;
+use crate::{
+    api::{ArithApi, CompareApi, LuaVm, StackApi},
+    state::LuaState,
+};
 
 use super::utils::{u16_isize, u8_isize};
 

@@ -1,9 +1,9 @@
 use gloo_utils::format::JsValueSerdeExt;
-use neige_infra::{
-    state::{GetApi, LuaApi, PushApi, SetApi},
-    value::value::LuaValue,
+use neige_runtime::{
+    api::{GetApi, LuaApi, PushApi, SetApi},
+    state::LuaState,
+    LuaValue,
 };
-use neige_runtime::state::LuaState;
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
 #[wasm_bindgen(module = "/ts/lib.ts")]

@@ -1,11 +1,16 @@
 use std::panic::{catch_unwind, AssertUnwindSafe};
 
-use neige_infra::{
-    state::{AccessApi, CallApi, MiscApi},
-    value::value::LuaValue,
-};
+use crate::{api::AccessApi, state::LuaState, value::value::LuaValue};
 
-use crate::state::LuaState;
+use super::CallApi;
+
+pub trait MiscApi {
+    fn len(&mut self, idx: isize);
+    fn concat(&mut self, n: usize);
+    fn next(&mut self, idx: isize) -> bool;
+    fn error(&mut self) -> isize;
+    fn pcall(&mut self, n_args: isize, n_results: isize, msg: isize) -> isize;
+}
 
 impl MiscApi for LuaState {
     fn len(&mut self, idx: isize) {

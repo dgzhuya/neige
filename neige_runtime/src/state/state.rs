@@ -3,7 +3,7 @@ use std::{
     rc::Rc,
 };
 
-use neige_infra::value::value::LuaValue;
+use crate::value::value::LuaValue;
 
 use super::{node::LuaNode, stack::LuaStack};
 

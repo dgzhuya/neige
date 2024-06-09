@@ -1,6 +1,7 @@
-use neige_infra::state::{AccessApi, LuaVm, PushApi, StackApi};
-
-use crate::state::LuaState;
+use crate::{
+    api::{AccessApi, LuaVm, PushApi, StackApi},
+    state::LuaState,
+};
 
 impl LuaState {
     pub(super) fn pop_result(&mut self, a: isize, c: isize) {

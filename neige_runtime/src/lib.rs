@@ -1,7 +1,10 @@
 pub mod api;
 pub mod libs;
 pub mod state;
+mod value;
 mod vm;
+
+pub use value::value::LuaValue;
 
 #[cfg(test)]
 #[cfg(not(feature = "wasm"))]

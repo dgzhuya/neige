@@ -1,6 +1,6 @@
 use std::rc::Rc;
 
-use crate::{code::inst::Instruction, value::value::LuaValue};
+use crate::code::inst::Instruction;
 
 #[derive(Debug)]
 pub struct Prototype {
@@ -49,16 +49,6 @@ impl Constant {
             Constant::Number(f) => format!("{}", f),
             Constant::Integer(i) => format!("{}", i),
             Constant::Str(s) => format!("{:?}", s),
-        }
-    }
-
-    pub fn to_value(&self) -> LuaValue {
-        match self {
-            Constant::Nil => LuaValue::Nil,
-            Constant::Boolean(b) => LuaValue::Boolean(*b),
-            Constant::Number(n) => LuaValue::Number(*n),
-            Constant::Integer(i) => LuaValue::Integer(*i),
-            Constant::Str(s) => LuaValue::Str(s.clone()),
         }
     }
 }

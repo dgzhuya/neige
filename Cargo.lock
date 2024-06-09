@@ -67,7 +67,6 @@ name = "neige_infra"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "serde",
 ]
 
 [[package]]
@@ -76,6 +75,7 @@ version = "0.1.0"
 dependencies = [
  "neige_infra",
  "neige_undump",
+ "serde",
 ]
 
 [[package]]
@@ -92,7 +92,6 @@ version = "0.1.0"
 dependencies = [
  "gloo-utils",
  "js-sys",
- "neige_infra",
  "neige_runtime",
  "serde",
  "serde-wasm-bindgen",

@@ -4,11 +4,9 @@ use std::{
     rc::{Rc, Weak},
 };
 
-use neige_infra::{
-    math::random,
-    value::{closure::Closure, upval::LuaUpval, value::LuaValue},
-    LUA_REGISTRY_INDEX,
-};
+use neige_infra::{math::random, LUA_REGISTRY_INDEX};
+
+use crate::value::{closure::Closure, upval::LuaUpval, value::LuaValue};
 
 use super::node::LuaNode;
 

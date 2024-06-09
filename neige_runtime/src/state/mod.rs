@@ -3,8 +3,7 @@ mod node;
 mod stack;
 mod state;
 
-use neige_infra::{state::LuaApi, value::value::LuaValue};
-
+use crate::{api::LuaApi, value::value::LuaValue};
 pub use {stack::LuaStack, state::LuaState};
 
 impl LuaApi for LuaState {}

@@ -10,3 +10,4 @@ wasm = ["neige_undump/wasm", "neige_infra/wasm"]
 [dependencies]
 neige_undump = { workspace = true }
 neige_infra = { workspace = true }
+serde = { version = "1.0.203", features = ["derive"] }

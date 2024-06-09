@@ -1,7 +1,11 @@
-use neige_infra::{math::float_to_integer, state::ArithApi, value::value::LuaValue};
+use neige_infra::math::float_to_integer;
 
-use crate::state::LuaState;
+use crate::{state::LuaState, value::value::LuaValue};
 use neige_infra::LuaArith as Arith;
+
+pub trait ArithApi {
+    fn arith(&mut self, op: Arith);
+}
 
 impl ArithApi for LuaState {
     fn arith(&mut self, op: Arith) {
