@@ -12,9 +12,9 @@ mod tests {
 
     use std::io::BufReader;
 
-    use neige_infra::{read_file, state::CallApi};
+    use neige_infra::read_file;
 
-    use crate::state::LuaState;
+    use crate::{api::CallApi, state::LuaState};
 
     #[test]
     fn test_lua_state() {
