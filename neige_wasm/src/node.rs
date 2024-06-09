@@ -1,5 +1,5 @@
 use gloo_utils::format::JsValueSerdeExt;
-use neige_runtime::{
+use neige_lua::{
     api::{GetApi, LuaApi, PushApi, SetApi},
     state::LuaState,
     LuaValue,

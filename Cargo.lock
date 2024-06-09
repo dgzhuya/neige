@@ -70,7 +70,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "neige_runtime"
+name = "neige_lua"
 version = "0.1.0"
 dependencies = [
  "neige_infra",
@@ -92,7 +92,7 @@ version = "0.1.0"
 dependencies = [
  "gloo-utils",
  "js-sys",
- "neige_runtime",
+ "neige_lua",
  "serde",
  "serde-wasm-bindgen",
  "wasm-bindgen",
