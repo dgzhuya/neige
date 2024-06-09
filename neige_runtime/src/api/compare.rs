@@ -4,7 +4,6 @@ use neige_infra::{state::CompareApi, value::value::LuaValue, LuaCompare};
 
 use crate::state::LuaState;
 
-#[allow(unused_variables)]
 impl CompareApi for LuaState {
     fn compare(&mut self, idx1: isize, idx2: isize, op: LuaCompare) -> bool {
         let a = self.stack_get(idx1);
