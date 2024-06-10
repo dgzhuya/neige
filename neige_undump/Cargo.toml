@@ -16,4 +16,4 @@ wasm = []
 
 [dependencies]
 anyhow = { workspace = true }
-neige_infra = { workspace = true }
+neige-infra = { workspace = true }

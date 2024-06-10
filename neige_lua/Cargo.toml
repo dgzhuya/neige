@@ -11,9 +11,9 @@ repository = "https://github.com/dgzhuya/neige/tree/main/neige_lua"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [features]
-wasm = ["neige_undump/wasm", "neige_infra/wasm"]
+wasm = ["neige-undump/wasm", "neige-infra/wasm"]
 
 [dependencies]
-neige_undump = { path = "../neige_undump", version = "0.1.0" }
-neige_infra = { path = "../neige_infra", version = "0.1.0" }
+neige-undump = { path = "../neige_undump", version = "0.1.0" }
+neige-infra = { path = "../neige_infra", version = "0.1.0" }
 serde = { version = "1.0.203", features = ["derive"] }

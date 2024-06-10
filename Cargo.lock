@@ -9,35 +9,35 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f538837af36e6f6a9be0faa67f9a314f8119e4e4b5867c6ab40ed60360142519"
 
 [[package]]
+name = "neige-compiler"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "neige-infra",
+]
+
+[[package]]
+name = "neige-infra"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+]
+
+[[package]]
 name = "neige-lua"
 version = "0.1.0"
 dependencies = [
- "neige_infra",
- "neige_undump",
+ "neige-infra",
+ "neige-undump",
  "serde",
 ]
 
 [[package]]
-name = "neige_compiler"
+name = "neige-undump"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "neige_infra",
-]
-
-[[package]]
-name = "neige_infra"
-version = "0.1.0"
-dependencies = [
- "anyhow",
-]
-
-[[package]]
-name = "neige_undump"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "neige_infra",
+ "neige-infra",
 ]
 
 [[package]]
