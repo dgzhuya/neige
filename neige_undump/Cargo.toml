@@ -16,4 +16,4 @@ wasm = []
 
 [dependencies]
 anyhow = { workspace = true }
-neige-infra = { workspace = true }
+neige-infra = { version = "0.1.0" }

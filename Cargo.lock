@@ -13,7 +13,7 @@ name = "neige-compiler"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "neige-infra",
+ "neige-infra 0.1.0",
 ]
 
 [[package]]
@@ -24,10 +24,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "neige-infra"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cbf2518d734ab5aa3b364e2f72cc3543c4c9de1bdbca904d463d1de0d5dbb539"
+dependencies = [
+ "anyhow",
+]
+
+[[package]]
 name = "neige-lua"
 version = "0.1.0"
 dependencies = [
- "neige-infra",
+ "neige-infra 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "neige-undump",
  "serde",
 ]
@@ -37,7 +46,7 @@ name = "neige-undump"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "neige-infra",
+ "neige-infra 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
