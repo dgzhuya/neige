@@ -1,7 +1,13 @@
 [package]
-name = "neige_undump"
+name = "neige-undump"
 version = "0.1.0"
 edition = "2021"
+authors = ["dgzhuya"]
+license = "MIT"
+description = "一个简单的lua运行时"
+readme = "README.md"
+homepage = "https://github.com/dgzhuya/neige/tree/main/neige_undump"
+repository = "https://github.com/dgzhuya/neige/tree/main/neige_undump"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [features]
