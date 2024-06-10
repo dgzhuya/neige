@@ -14,6 +14,6 @@ repository = "https://github.com/dgzhuya/neige/tree/main/neige_lua"
 wasm = ["neige-undump/wasm", "neige-infra/wasm"]
 
 [dependencies]
-neige-undump = { path = "../neige_undump", version = "0.1.0" }
+neige-undump = { version = "0.1.0" }
 neige-infra = { version = "0.1.0" }
 serde = { version = "1.0.203", features = ["derive"] }
