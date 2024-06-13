@@ -73,14 +73,15 @@ impl LuaVm for LuaState {
 
     fn load_vararg(&mut self, n: isize) {
         let node = self.get_node();
-        let stack = node.get_stack();
+        let mut stack = node.get_stack_mut();
+        let varagrs = stack.varargs.clone();
         let n = if n < 0 {
             stack.varargs.len() as isize
         } else {
             n
         };
-        self.stack_check(n as usize);
-        self.stack_push_n(stack.varargs.clone(), n);
+        stack.check(n as usize);
+        stack.push_n(varagrs, n);
     }
 
     /// ### 加载函数信息
