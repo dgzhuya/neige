@@ -10,7 +10,7 @@ use crate::{
 use super::CallApi;
 
 pub trait AccessApi {
-    fn tp_name(&self, tp: LuaType) -> &str;
+    fn tp_name(&self, tp: LuaType) -> String;
     fn ty_id(&self, idx: isize) -> LuaType;
     fn is_none(&self, idx: isize) -> bool;
     fn is_nil(&self, idx: isize) -> bool;
@@ -35,8 +35,8 @@ pub trait AccessApi {
 
 impl AccessApi for LuaState {
     /// 获取类型名
-    fn tp_name(&self, tp: LuaType) -> &str {
-        match tp {
+    fn tp_name(&self, tp: LuaType) -> String {
+        let name = match tp {
             LuaType::None => "no value",
             LuaType::Nil => "nil",
             LuaType::Boolean => "boolean",
@@ -48,7 +48,8 @@ impl AccessApi for LuaState {
             LuaType::UserData => "user data",
             LuaType::Thread => "thread",
             LuaType::Integer => "integer",
-        }
+        };
+        name.into()
     }
 
     fn ty_id(&self, idx: isize) -> neige_infra::LuaType {
