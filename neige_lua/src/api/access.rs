@@ -86,7 +86,7 @@ impl AccessApi for LuaState {
 
     fn is_string(&self, idx: isize) -> bool {
         let t = self.ty_id(idx);
-        t == LuaType::String || t == LuaType::Number || t == LuaType::Table
+        t == LuaType::String || t == LuaType::Number
     }
 
     fn is_rust_fn(&self, idx: isize) -> bool {
