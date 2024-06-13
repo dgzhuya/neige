@@ -5,6 +5,13 @@ use crate::{
     state::LuaState,
 };
 
+fn lua_type(ls: &mut dyn LuaApi) -> usize {
+    let tp = ls.ty_id(1);
+    let ty_name = ls.tp_name(tp);
+    ls.push_string(&ty_name);
+    1
+}
+
 fn pcall(ls: &mut dyn LuaApi) -> usize {
     let n_args = ls.get_top() - 1;
     let status = ls.pcall(n_args, -1, 0);
@@ -49,6 +56,7 @@ fn lua_print(ls: &mut dyn LuaApi) -> usize {
 
 impl LuaState {
     pub fn aux_lib(&mut self) {
+        self.register("type", lua_type);
         self.register("print", lua_print);
         self.register("getmetatable", get_meta_table);
         self.register("setmetatable", set_meta_table);
