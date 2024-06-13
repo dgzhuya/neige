@@ -16,7 +16,7 @@ pub(super) fn pairs(ls: &mut dyn LuaApi) -> usize {
     ls.push_rust_fn(next);
     ls.push_value(1);
     ls.push_nil();
-    1
+    3
 }
 
 pub(super) fn ipairs(ls: &mut dyn LuaApi) -> usize {
