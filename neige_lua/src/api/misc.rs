@@ -63,10 +63,13 @@ impl MiscApi for LuaState {
                 let next_val = tbl.get(&next_key);
                 self.stack_push(next_key);
                 self.stack_push(next_val);
-                return true;
+                true
+            } else {
+                false
             }
+        } else {
+            panic!("table expected!")
         }
-        false
     }
 
     fn error(&mut self) -> isize {

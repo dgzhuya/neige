@@ -17,7 +17,7 @@ pub struct LuaTable {
 
 impl LuaTable {
     pub fn next_key(&self, key: &LuaValue) -> LuaValue {
-        if self.keys.borrow().is_empty() || (key.is_nil() && self.changed.borrow_mut().clone()) {
+        if self.keys.borrow().is_empty() || (key.is_nil() && *self.changed.borrow()) {
             self.init_keys();
             *self.changed.borrow_mut() = false;
         };
@@ -43,8 +43,8 @@ impl LuaTable {
             if !v.is_nil() {
                 self.keys
                     .borrow_mut()
-                    .insert(key.clone(), LuaValue::Integer(i as i64));
-                key = LuaValue::Integer(i as i64)
+                    .insert(key.clone(), LuaValue::Integer(i as i64 + 1));
+                key = LuaValue::Integer(i as i64 + 1)
             }
         }
 
