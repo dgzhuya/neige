@@ -246,14 +246,6 @@ impl LuaState {
             }
             Instruction::SetList(a, b, c) => {
                 let a = u8_isize(a) + 1;
-                let b_is_zero = *b == 0;
-                let b = if b_is_zero {
-                    let b = self.to_integer(-1) as isize;
-                    self.pop(1);
-                    b - a - 1
-                } else {
-                    u16_isize(b)
-                };
                 let c = if *c > 0 {
                     u16_isize(c) - 1
                 } else {
@@ -263,6 +255,15 @@ impl LuaState {
                         panic!("SetList error")
                     }
                 };
+
+                let b_is_zero = *b == 0;
+                let b = if b_is_zero {
+                    let b = self.to_integer(-1) as isize;
+                    self.pop(1);
+                    b - a - 1
+                } else {
+                    u16_isize(b)
+                };
                 let mut idx = (c * 50) as i64;
                 for j in 1..=b {
                     idx += 1;
@@ -271,13 +272,12 @@ impl LuaState {
                 }
 
                 if b_is_zero {
-                    let register_count = self.register_count() as isize;
-                    for j in register_count..=self.get_top() as isize {
+                    for j in self.register_count() as isize + 1..=self.get_top() as isize {
                         idx += 1;
                         self.push_value(j);
                         self.set_i(a, idx)
                     }
-                    self.set_top(register_count)
+                    self.set_top(self.register_count() as isize)
                 }
             }
             Instruction::Closure(a, bx) => {
