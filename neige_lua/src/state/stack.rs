@@ -66,7 +66,9 @@ impl LuaStack {
         if self.slots.len() == self.top {
             panic!("stack overflow!")
         }
-        self.slots[self.top] = val;
+        if !val.is_nil() {
+            self.slots[self.top] = val;
+        }
         self.top += 1;
     }
 
