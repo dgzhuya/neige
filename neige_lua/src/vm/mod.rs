@@ -47,7 +47,7 @@ impl LuaState {
                 let a = u8_isize(a) + 1;
                 let b = u16_isize(b);
                 self.push_nil();
-                for i in a..=b {
+                for i in a..=a + b {
                     self.copy(-1, i)
                 }
                 self.pop(1)
