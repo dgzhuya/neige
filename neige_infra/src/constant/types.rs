@@ -1,5 +1,6 @@
 use std::fmt::Display;
 
+/// lua类型枚举
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum LuaType {
     None,

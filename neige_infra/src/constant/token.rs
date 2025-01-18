@@ -1,3 +1,4 @@
+/// lua token枚举
 #[allow(dead_code)]
 pub enum LuaToken {
     And,          // and

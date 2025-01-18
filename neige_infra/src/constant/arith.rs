@@ -1,22 +1,26 @@
+/// 运算符号
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum LuaArith {
-    Add,
-    Sub,
-    Mul,
-    Mod,
-    Pow,
-    Div,
-    IDiv,
-    BAnd,
-    Bor,
-    BXor,
-    Shl,
-    Shr,
-    Unm,
-    BNot,
+    Add,  // 加
+    Sub,  // 减
+    Mul,  // 乘
+    Mod,  // 取模
+    Pow,  // 幂
+    Div,  // 除
+    IDiv, // 整除
+    BAnd, // 位与
+    Bor,  // 位或
+    BXor, // 位异或
+    Shl,  // 左移
+    Shr,  // 右移
+    Unm,  // 取反
+    BNot, // 位取反
 }
 
 impl LuaArith {
+    /// 获取元方法名称
+    ///
+    /// @return &str 元方法名称
     pub fn get_meta_name(&self) -> &str {
         match self {
             LuaArith::Add => "__add",
