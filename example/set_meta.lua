@@ -1,3 +1,9 @@
+--[[
+1111
+]]
+local a = "1111"
+local b = 2222
+local c = 2.333
 local mt = {} -- metatable for complex numbers
 mt.__add = function(x, y)
     return {
