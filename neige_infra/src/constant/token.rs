@@ -1,5 +1,5 @@
 /// lua token枚举
-#[allow(dead_code)]
+#[derive(PartialEq, Debug)]
 pub enum LuaToken {
     And,          // and
     Break,        // break
@@ -49,7 +49,7 @@ pub enum LuaToken {
     CurlyR,       // }
     SqurL,        // [
     SqurR,        // ]
-    DoubleColon,  // ::
+    DoubColon,    // ::
     SemiColon,    // ;
     Colon,        // :
     Comma,        // ,
