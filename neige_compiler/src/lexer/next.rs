@@ -4,7 +4,6 @@ use neige_infra::LuaToken;
 
 use super::Lex;
 
-#[allow(dead_code)]
 impl Lex {
     pub fn next(&mut self) -> LuaToken {
         if self.ahead == LuaToken::Eos {
@@ -19,6 +18,14 @@ impl Lex {
             self.ahead = self.do_next();
         }
         &self.ahead
+    }
+
+    pub fn next_identifer(&mut self) -> String {
+        let token = self.next();
+        match token {
+            LuaToken::Name(ident) => ident,
+            _ => panic!("Unexpected token: {:?}", token),
+        }
     }
 
     pub fn expect(&mut self, token: LuaToken) {
