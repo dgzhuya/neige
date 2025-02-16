@@ -3,26 +3,26 @@ use super::{
     Block,
 };
 
-#[derive(Debug)]
-struct WhileStat {
+#[derive(Debug, PartialEq)]
+pub struct WhileStat {
     exp: Box<Exp>,
     block: Box<Block>,
 }
 
-#[derive(Debug)]
-struct RepeatStat {
+#[derive(Debug, PartialEq)]
+pub struct RepeatStat {
     block: Box<Block>,
     exp: Box<Exp>,
 }
 
-#[derive(Debug)]
-struct IfStat {
+#[derive(Debug, PartialEq)]
+pub struct IfStat {
     exps: Vec<Box<Exp>>,
     blocks: Vec<Box<Block>>,
 }
 
-#[derive(Debug)]
-struct ForNumStat {
+#[derive(Debug, PartialEq)]
+pub struct ForNumStat {
     line_of_for: i32,
     line_of_do: i32,
     var_name: String,
@@ -32,38 +32,37 @@ struct ForNumStat {
     block: Box<Block>,
 }
 
-#[derive(Debug)]
-struct ForInStat {
+#[derive(Debug, PartialEq)]
+pub struct ForInStat {
     line_of_do: i32,
     name_list: Vec<String>,
     exp_list: Vec<Box<Exp>>,
     block: Box<Block>,
 }
 
-#[derive(Debug)]
-struct LocalVarDeclStat {
+#[derive(Debug, PartialEq)]
+pub struct LocalVarDeclStat {
     last_line: i32,
     name_list: Vec<String>,
     exp_list: Vec<Box<Exp>>,
 }
 
-#[derive(Debug)]
-struct AssignStat {
+#[derive(Debug, PartialEq)]
+pub struct AssignStat {
     last_line: i32,
     var_list: Vec<Box<Exp>>,
     exp_list: Vec<Box<Exp>>,
 }
 
-#[derive(Debug)]
-struct LocalFuncDefStat {
+#[derive(Debug, PartialEq)]
+pub struct LocalFuncDefStat {
     name: String,
     exp: Box<FuncDefExp>,
 }
 
 #[allow(dead_code)]
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Stat {
-    Empty,
     Break(i32),
     Label(String),
     Goto(String),

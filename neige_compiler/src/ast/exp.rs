@@ -1,47 +1,47 @@
 use super::Block;
 
-#[derive(Debug)]
-struct StringExp {
+#[derive(Debug, PartialEq)]
+pub struct StringExp {
     line: i32,
     str: String,
 }
 
-#[derive(Debug)]
-struct NameExp {
+#[derive(Debug, PartialEq)]
+pub struct NameExp {
     line: i32,
     name: String,
 }
 
-#[derive(Debug)]
-struct UnopExp {
+#[derive(Debug, PartialEq)]
+pub struct UnopExp {
     line: i32,
     op: i32,
     exp: Box<Exp>,
 }
 
-#[derive(Debug)]
-struct BinopExp {
+#[derive(Debug, PartialEq)]
+pub struct BinopExp {
     line: i32,
     op: i32,
     exp1: Box<Exp>,
     exp2: Box<Exp>,
 }
 
-#[derive(Debug)]
-struct ConcatExp {
+#[derive(Debug, PartialEq)]
+pub struct ConcatExp {
     line: i32,
     exps: Vec<Box<Exp>>,
 }
 
-#[derive(Debug)]
-struct TableConstructorExp {
+#[derive(Debug, PartialEq)]
+pub struct TableConstructorExp {
     line: i32,
     last_line: i32,
     key_exps: Vec<Box<Exp>>,
     val_exps: Vec<Box<Exp>>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct FuncCallExp {
     line: i32,
     last_line: i32,
@@ -50,7 +50,7 @@ pub struct FuncCallExp {
     args: Vec<Box<Exp>>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct FuncDefExp {
     line: i32,
     last_line: i32,
@@ -59,15 +59,15 @@ pub struct FuncDefExp {
     block: Box<Block>,
 }
 
-#[derive(Debug)]
-struct TableAccessExp {
+#[derive(Debug, PartialEq)]
+pub struct TableAccessExp {
     last_line: i32,
     prefix_exp: Box<Exp>,
     key_exp: Box<Exp>,
 }
 
 #[allow(dead_code)]
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Exp {
     Nil(i32),
     True(i32),

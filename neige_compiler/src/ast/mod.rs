@@ -2,12 +2,11 @@
 mod exp;
 mod stat;
 
-use exp::Exp;
-use stat::Stat;
+pub use {exp::Exp, stat::Stat};
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Block {
-    last_line: i32,     // 行号
-    stats: Vec<Stat>,   // 语句
-    ret_exps: Vec<Exp>, // 返回表达式
+    pub stats: Vec<Stat>,           // 语句
+    pub ret_exps: Option<Vec<Exp>>, // 返回表达式
+    pub last_line: usize,           // 行号
 }
