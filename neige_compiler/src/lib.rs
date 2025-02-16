@@ -1,5 +1,6 @@
 mod ast;
 mod lexer;
+mod parse;
 
 #[cfg(test)]
 mod tests {
