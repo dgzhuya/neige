@@ -5,59 +5,59 @@ use super::{
 
 #[derive(Debug, PartialEq)]
 pub struct WhileStat {
-    exp: Box<Exp>,
-    block: Box<Block>,
+    pub(crate) exp: Box<Exp>,
+    pub(crate) block: Box<Block>,
 }
 
 #[derive(Debug, PartialEq)]
 pub struct RepeatStat {
-    block: Box<Block>,
-    exp: Box<Exp>,
+    pub(crate) block: Box<Block>,
+    pub(crate) exp: Box<Exp>,
 }
 
 #[derive(Debug, PartialEq)]
 pub struct IfStat {
-    exps: Vec<Box<Exp>>,
-    blocks: Vec<Box<Block>>,
+    pub(crate) exps: Vec<Box<Exp>>,
+    pub(crate) blocks: Vec<Box<Block>>,
 }
 
 #[derive(Debug, PartialEq)]
 pub struct ForNumStat {
-    line_of_for: usize,
-    line_of_do: usize,
-    var_name: String,
-    init_exp: Box<Exp>,
-    limit_exp: Box<Exp>,
-    step_exp: Box<Exp>,
-    block: Box<Block>,
+    pub(crate) line_of_for: usize,
+    pub(crate) line_of_do: usize,
+    pub(crate) var_name: String,
+    pub(crate) init_exp: Box<Exp>,
+    pub(crate) limit_exp: Box<Exp>,
+    pub(crate) step_exp: Box<Exp>,
+    pub(crate) block: Box<Block>,
 }
 
 #[derive(Debug, PartialEq)]
 pub struct ForInStat {
-    line_of_do: usize,
-    name_list: Vec<String>,
-    exp_list: Vec<Box<Exp>>,
-    block: Box<Block>,
+    pub(crate) line_of_do: usize,
+    pub(crate) name_list: Vec<String>,
+    pub(crate) exp_list: Vec<Box<Exp>>,
+    pub(crate) block: Box<Block>,
 }
 
 #[derive(Debug, PartialEq)]
 pub struct LocalVarDeclStat {
-    last_line: usize,
-    name_list: Vec<String>,
-    exp_list: Vec<Box<Exp>>,
+    pub(crate) last_line: usize,
+    pub(crate) name_list: Vec<String>,
+    pub(crate) exp_list: Vec<Box<Exp>>,
 }
 
 #[derive(Debug, PartialEq)]
 pub struct AssignStat {
-    last_line: usize,
-    var_list: Vec<Box<Exp>>,
-    exp_list: Vec<Box<Exp>>,
+    pub(crate) last_line: usize,
+    pub(crate) var_list: Vec<Box<Exp>>,
+    pub(crate) exp_list: Vec<Box<Exp>>,
 }
 
 #[derive(Debug, PartialEq)]
 pub struct LocalFuncDefStat {
-    name: String,
-    exp: Box<FuncDefExp>,
+    pub(crate) name: String,
+    pub(crate) exp: Box<FuncDefExp>,
 }
 
 #[allow(dead_code)]

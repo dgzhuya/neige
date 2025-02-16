@@ -2,7 +2,7 @@
 mod exp;
 mod stat;
 
-pub use {exp::Exp, stat::Stat};
+pub use {exp::*, stat::*};
 
 #[derive(Debug, PartialEq)]
 pub struct Block {
