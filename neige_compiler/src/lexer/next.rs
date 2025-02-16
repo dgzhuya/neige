@@ -41,7 +41,7 @@ impl Lex {
 }
 
 impl Lex {
-    pub fn do_next(&mut self) -> LuaToken {
+    pub(super) fn do_next(&mut self) -> LuaToken {
         if let Some(byt) = self.next_byte() {
             match byt {
                 b'\n' => {
